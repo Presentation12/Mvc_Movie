@@ -1,0 +1,275 @@
+﻿@model MvcMovie.Models.MovieGenreViewModel
+
+@{
+    Layout = "/Views/Shared/App/_Layout.cshtml";
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+<form id="form-filter" asp-controller="Movies" asp-action="Index" method="get">
+    <p>
+        <select id="genre-filter" asp-for="MovieGenre" asp-items="Model.Genres" class="form-control">
+            <option value="">All</option>
+        </select>
+
+        <div class="input-group">
+            <input type="text" id="title-filter" asp-for="SearchString" class="form-control border-0 small" placeholder="Movie..." />
+            <input type="submit" id="search-button" value="Filter" class="btn btn-primary" />
+        </div>
+    </p>
+</form>
+
+<table id="table"
+       data-toggle="table"
+       @*data-url="json/data1.json"*@
+       data-show-fullscreen="true"
+       data-query-params="queryParams"
+       data-detail-view="true"
+       data-pagination="true"
+       data-id-field="id"
+       data-page-list="[10, 25, 50, 100, all]"
+       data-show-footer="true"
+       data-side-pagination="server"
+       data-url="/Movies/paginate"
+       data-method="POST"
+       @*data-ajax="ajaxRequest"*@
+        data-search="true">
+    <thead>
+        <tr>
+            <th data-field="title">Title</th>
+            <th data-field="releaseDate">Release Date</th>
+            <th data-field="genreName">Genre</th>
+            <th data-field="price">Price</th>
+            <th data-field="rating">Rating</th>
+            <th data-field="" data-formatter="operateFormatter">Actions</th>
+        </tr>
+    </thead>
+</table>
+
+<style>
+    .select,
+    #locale {
+        width: 100%;
+    }
+
+    .like {
+        margin-right: 10px;
+    }
+</style>
+
+@section scripts {
+    <script>
+        var $table = $('#table')
+        var $remove = $('#remove')
+        var selections = []
+
+        function getIdSelections() {
+            return $.map($table.bootstrapTable('getSelections'), function (row) {
+                return row.id
+            })
+        }
+
+        function responseHandler(res) {
+            $.each(res.rows, function (i, row) {
+                row.state = $.inArray(row.id, selections) !== -1
+            })
+            return res
+        }
+
+        function detailFormatter(index, row) {
+            var html = []
+            $.each(row, function (key, value) {
+                html.push('<p><b>' + key + ':</b> ' + value + '</p>')
+            })
+            return html.join('')
+        }
+
+        function operateFormatter(value, row, index) {
+            return [
+                `<a class="details" href="/Movies/Details/${row.id}" title="Details">`,
+                '<i class="fa fa-eye"></i>',
+                '</a>',
+                `<a class="edit" href="/Movies/Edit/${row.id}" title="Edit">`,
+                '<i class="fa fa-pen"></i>',
+                '</a>',
+                `<a class="delete" href="/Movies/Delete/${row.id}" title="Delete">`,
+                '<i class="fa fa-trash"></i>',
+                '</a>  '
+            ].join('')
+        }
+
+        window.operateEvents = {
+            'click .like': function (e, value, row, index) {
+                alert('You click like action, row: ' + JSON.stringify(row))
+            },
+            'click .remove': function (e, value, row, index) {
+                $table.bootstrapTable('remove', {
+                    field: 'id',
+                    values: [row.id]
+                })
+            }
+        }
+
+        //function ajaxRequest(params) {
+        //    $.ajax({
+        //        url: params.url,
+        //        type: 'POST',
+        //        data: JSON.stringify(params.data),
+        //        contentType: "application/json",
+        //        success: function (data) {
+        //            // Atualiza o conteúdo da tabela com os dados retornados pelo controlador
+        //            $('#table').bootstrapTable('load', data);
+        //        },
+        //        error: function (xhr, textStatus, errorThrown) {
+        //            console.log(textStatus + ': ' + errorThrown);
+        //        }
+        //    });
+        //}
+
+        function queryParams(params) {
+            const genreFilter = $('#genre-filter').val();
+            const titleFilter = $('#title-filter').val();
+            var search = [];
+            search.push({
+                name: "Genre",
+                value: genreFilter
+            });
+            search.push({
+                name: "Title",
+                value: titleFilter
+            });
+            params.search = search;
+            return JSON.stringify(params);
+        }
+
+            //$(document).ready(function(){
+            //  $("#title-filter").on("keyup", function() {
+            //    var value = $(this).val().tolowercase();
+            //    $("#table tr").filter(function() {
+            //      $(this).toggle($(this).text().tolowercase().indexof(value) > -1)
+            //    });
+            //  });
+            //});
+
+            //function debounce(func, wait, immediate) {
+            //    let timeout;
+            //    return function () {
+            //        const context = this, args = arguments;
+            //        const later = function () {
+            //            timeout = null;
+            //            if (!immediate) func.apply(context, args);
+            //        };
+            //        const callNow = immediate && !timeout;
+            //        clearTimeout(timeout);
+            //        timeout = setTimeout(later, wait);
+            //        if (callNow) func.apply(context, args);
+            //    };
+            //}
+
+            //$(document).ready(function () {
+            //    // Seleciona os elementos de filtro por id
+            //    const genreFilter = $('#genre-filter');
+            //    const titleFilter = $('#title-filter');
+            //    const searchButton = $('#search-button');
+
+            //    // Define uma função para atualizar a tabela
+            //    function updateTable() {
+            //        // Obtém os valores dos filtros
+            //        const genre = genreFilter.val();
+            //        const title = titleFilter.val();
+
+            //        // Faz uma requisição para o controlador com os valores dos filtros
+            //        $.ajax({
+            //            url: '/Movies/Index',
+            //            type: 'GET',
+            //            data: { movieGenre: genre, searchString: title },
+            //            success: function (data) {
+            //                // Atualiza o conteúdo da tabela com os dados retornados pelo controlador
+            //                $('#table').bootstrapTable('load', data);
+            //            },
+            //            error: function (xhr, textStatus, errorThrown) {
+            //                console.log(textStatus + ': ' + errorThrown);
+            //            }
+            //        });
+            //    }
+
+            //    // Adiciona o evento de click ao botão de busca
+            //    searchButton.click(updateTable);
+            //});
+
+    </script>
+}
+
+<div id="wrapper">
+    <!-- Color System -->
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card bg-primary text-white shadow">
+                <div class="card-body">
+                    Primary
+                    <div class="text-white-50 small">#4e73df</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="card bg-success text-white shadow">
+                <div class="card-body">
+                    Success
+                    <div class="text-white-50 small">#1cc88a</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="card bg-info text-white shadow">
+                <div class="card-body">
+                    Info
+                    <div class="text-white-50 small">#36b9cc</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="card bg-warning text-white shadow">
+                <div class="card-body">
+                    Warning
+                    <div class="text-white-50 small">#f6c23e</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="card bg-danger text-white shadow">
+                <div class="card-body">
+                    Danger
+                    <div class="text-white-50 small">#e74a3b</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="card bg-secondary text-white shadow">
+                <div class="card-body">
+                    Secondary
+                    <div class="text-white-50 small">#858796</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="card bg-light text-black shadow">
+                <div class="card-body">
+                    Light
+                    <div class="text-black-50 small">#f8f9fc</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="card bg-dark text-white shadow">
+                <div class="card-body">
+                    Dark
+                    <div class="text-white-50 small">#5a5c69</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
