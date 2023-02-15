@@ -7,14 +7,10 @@
 
 <h1>Index</h1>
 
-<form id="form-filter" asp-controller="Movies" asp-action="Index" method="get">
+<form id="form-filter" asp-controller="Genre" asp-action="Index" method="get">
     <p>
-        <select id="genre-filter" asp-for="MovieGenre" asp-items="Model.Genres" class="form-control">
-            <option value="">All</option>
-        </select>
-
         <div class="input-group">
-            <input type="text" id="title-filter" asp-for="SearchString" class="form-control" placeholder="Movie..." />
+            <input type="text" id="genre-filter" asp-for="SearchString" class="form-control" placeholder="Genre..." />
             <input type="submit" id="search-button" value="Filter" class="btn btn-primary" />
         </div>
     </p>
@@ -34,17 +30,14 @@
        data-page-list="[10, 25, 50, 100, all]"
        data-show-footer="true"
        data-side-pagination="server"
-       data-url="/Movies/paginate"
+       data-url="/Genre/paginate"
        data-method="POST"
        data-search="false"
        data-show-columns="true">
     <thead>
         <tr>
-            <th data-field="title">Title</th>
-            <th data-field="releaseDate">Release Date</th>
-            <th data-field="genreName">Genre</th>
-            <th data-field="price">Price</th>
-            <th data-field="rating">Rating</th>
+            <th data-field="id">Id</th>
+            <th data-field="name">Name</th>
             <th data-field="" data-formatter="operateFormatter">Actions</th>
         </tr>
     </thead>
@@ -90,13 +83,7 @@
 
         function operateFormatter(value, row, index) {
             return [
-                `<a class="details" href="/Movies/Details/${row.id}" title="Details">`,
-                '<i class="fa fa-eye"></i>',
-                '</a>',
-                `<a class="edit" href="/Movies/Edit/${row.id}" title="Edit">`,
-                '<i class="fa fa-pen"></i>',
-                '</a>',
-                `<a class="delete" href="/Movies/Delete/${row.id}" title="Delete">`,
+                `<a class="delete" href="/Genre/Delete/${row.id}" title="Delete">`,
                 '<i class="fa fa-trash"></i>',
                 '</a>  '
             ].join('')
@@ -116,20 +103,19 @@
 
         function queryParams(params) {
             const genreFilter = $('#genre-filter').val();
-            const titleFilter = $('#title-filter').val();
+            //const titleFilter = $('#title-filter').val();
             var search = [];
             search.push({
                 name: "Genre",
                 value: genreFilter
             });
-            search.push({
-                name: "Title",
-                value: titleFilter
-            });
+            //search.push({
+            //    name: "Title",
+            //    value: titleFilter
+            //});
             params.search = search;
             return JSON.stringify(params);
         }
 
     </script>
 }
-

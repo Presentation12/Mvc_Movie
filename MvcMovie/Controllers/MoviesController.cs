@@ -55,9 +55,6 @@ namespace MvcMovie.Controllers
             };
 
             return View(movieGenreVM);
-
-            //Return entire list in database
-            //return View(await _context.Movie.ToListAsync());
         }
 
         [HttpPost]
@@ -142,7 +139,7 @@ namespace MvcMovie.Controllers
         // GET: Movies/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            if (id == null || _movieRepository.Get() == null)
+            if (id < 0 || !_movieRepository.Exists(id))
             {
                 return NotFound();
             }
@@ -228,7 +225,7 @@ namespace MvcMovie.Controllers
         // GET: Movies/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            if (id == null || _movieRepository.Get() == null)
+            if (id < 0 || !_movieRepository.Exists(id))
             {
                 return NotFound();
             }
