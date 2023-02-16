@@ -96,7 +96,19 @@ namespace MvcMovie.Controllers
         // GET: Movies/Create
         public IActionResult Create()
         {
-            return View();
+            // Use LINQ to get list of genres.
+            IQueryable<string> genreQuery = (from m in _genreRepository.Get()
+                                             orderby m.Name
+                                             select m.Name).AsQueryable();
+
+            //Verificar quando estiver vazio
+
+            var movieGenreVM = new MovieAllGenresViewModel
+            (
+                new SelectList(genreQuery)
+            );
+
+            return View(movieGenreVM);
         }
 
         // POST: Movies/Create
@@ -116,14 +128,7 @@ namespace MvcMovie.Controllers
                 movieInsert.Price = movie.Price;
 
                 Genre genre = _genreRepository.Get().Where(x => x.Name == movie.Genre).SingleOrDefault();
-
-                if (genre == null)
-                {
-                    movieInsert.Genre = new Genre();
-                    movieInsert.Genre.Name = movie.Genre;
-                }
-                else
-                    movieInsert.GenreId = genre.Id;
+                movieInsert.GenreId = genre.Id;
 
                 movieInsert.CreatedDate = DateTime.Now;
                 movieInsert.UpdatedDate = DateTime.Now;
