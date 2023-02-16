@@ -159,16 +159,26 @@ namespace MvcMovie.Controllers
                 x.Rating
             }).SingleOrDefault();
 
-            MovieViewModel movieView = new MovieViewModel();
+            // Use LINQ to get list of genres.
+            IQueryable<string> genreQuery = (from m in _genreRepository.Get()
+                                             orderby m.Name
+                                             select m.Name).AsQueryable();
 
-            movieView.Id = movie.Id;
-            movieView.Title = movie.Title;
-            movieView.Price = movie.Price;
-            movieView.ReleaseDate = movie.ReleaseDate;
-            movieView.Rating = movie.Rating;
-            movieView.Genre = movie.GenreName;
+            //Verificar quando estiver vazio
 
-            return View(movieView);
+            var movieGenreVM = new MovieAllGenresViewModel
+            (
+                new SelectList(genreQuery),
+                movie.Id,
+                movie.Title,
+                movie.Price,
+                movie.ReleaseDate,
+                movie.Rating
+            );
+
+            movieGenreVM.Genre = movie.GenreName;
+
+            return View(movieGenreVM);
         }
 
         // POST: Movies/Edit/5
@@ -196,14 +206,7 @@ namespace MvcMovie.Controllers
                     movieEdit.Price = movie.Price;
 
                     Genre genre = _genreRepository.Get().Where(x => x.Name == movie.Genre).SingleOrDefault();
-
-                    if (genre == null)
-                    {
-                        movieEdit.Genre = new Genre();
-                        movieEdit.Genre.Name = movie.Genre;
-                    }
-                    else
-                        movieEdit.GenreId = genre.Id;
+                    movieEdit.GenreId = genre.Id;
 
                     movieEdit.UpdatedDate = DateTime.Now;
 

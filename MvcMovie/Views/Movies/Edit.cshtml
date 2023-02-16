@@ -1,4 +1,4 @@
-﻿@model MvcMovie.Models.MovieViewModel
+﻿@model MvcMovie.Models.MovieAllGenresViewModel
 
 @{
     Layout = "/Views/Shared/App/_Layout.cshtml";
@@ -25,9 +25,15 @@
                 <span asp-validation-for="ReleaseDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Genre" class="control-label"></label>
-                <input asp-for="Genre" class="form-control" />
+                <div style="display: flex;">
+                    <label asp-for="Genre" class="control-label" style="width: 100%;"></label>
+                </div>
+                <select class="js-example-basic-single" style="width: 200px" asp-for="Genre" asp-items="Model.Genres" id="genre">
+                    <option value="">-</option>
+                </select>
                 <span asp-validation-for="Genre" class="text-danger"></span>
+
+                <a style="display: flex;" href="/Genre/Create" class="">Doesn't have the gender i want?</a>
             </div>
             <div class="form-group">
                 <label asp-for="Price" class="control-label"></label>
@@ -49,4 +55,9 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            $('.js-example-basic-single').select2();
+        });
+    </script>
 }
