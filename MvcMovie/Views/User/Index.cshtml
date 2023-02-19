@@ -1,0 +1,17 @@
+﻿@model MvcMovie.Models.UserViewModel
+
+@{
+    Layout = "/Views/Shared/App/_Layout.cshtml";
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<div>
+    <h4>Welcome @Model.Name!</h4>
+    <hr />
+
+</div>
+<div>
+    <a asp-action="Profile" asp-route-id="@Model?.Id" class="btn btn-primary">Profile</a>
+</div>
