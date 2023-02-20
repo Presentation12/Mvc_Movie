@@ -24,52 +24,59 @@ namespace MvcMovie.Controllers
             _userRepository = userRepository;
         }
 
-        // GET: UserController/id
-        public async Task<IActionResult> Index(int id)
+        public User GetUserByEmailAsync(string email)
         {
-            if (id < 0 || !_userRepository.Exists(id))
+            return _userRepository.Get().Where(x => x.Email == email).SingleOrDefault();
+        }
+
+        // GET: UserController
+        public ActionResult Index()
+        {
+            var tokenDecoded = new JwtSecurityTokenHandler().ReadJwtToken(HttpContext.Session.GetString("token"));
+
+            var claimMail = tokenDecoded.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+            string userMail = claimMail?.Value;
+
+            var user = GetUserByEmailAsync(userMail);
+
+            if (user == null)
             {
                 return NotFound();
             }
 
-            var user = _userRepository.Get().Where(x => x.Id == id).Select(x => new
+            var userModel = new UserViewModel
             {
-                x.Id,
-                x.Name,
-                x.Email
-            }).SingleOrDefault();
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email
+            };
 
-            UserViewModel userDetails = new UserViewModel();
-
-            userDetails.Id = id;
-            userDetails.Name = user.Name;
-            userDetails.Email = user.Email;
-
-            return View(userDetails);
+            return View(userModel);
         }
 
         // GET: UserController/Profile/id
-        public async Task<IActionResult> Profile(int id)
+        public async Task<IActionResult> Profile()
         {
-            if (id < 0 || !_userRepository.Exists(id))
+            var tokenDecoded = new JwtSecurityTokenHandler().ReadJwtToken(HttpContext.Session.GetString("token"));
+
+            var claimMail = tokenDecoded.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+            string userMail = claimMail?.Value;
+
+            var user = GetUserByEmailAsync(userMail);
+
+            if (user == null)
             {
                 return NotFound();
             }
 
-            var user = _userRepository.Get().Where(x => x.Id == id).Select(x => new
+            var userModel = new UserViewModel
             {
-                x.Id,
-                x.Name, 
-                x.Email
-            }).SingleOrDefault();
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email
+            };
 
-            UserViewModel userDetails = new UserViewModel();
-
-            userDetails.Id = id;
-            userDetails.Name = user.Name;
-            userDetails.Email = user.Email;
-
-            return View(userDetails);
+            return View(userModel);
         }
 
         // GET: UserController/Create
@@ -106,29 +113,28 @@ namespace MvcMovie.Controllers
         }
 
         // GET: UserController/Edit/id
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit()
         {
-            if (id < 0 || !_userRepository.Exists(id))
+            var tokenDecoded = new JwtSecurityTokenHandler().ReadJwtToken(HttpContext.Session.GetString("token"));
+
+            var claimMail = tokenDecoded.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+            string userMail = claimMail?.Value;
+
+            var user = GetUserByEmailAsync(userMail);
+
+            if (user == null)
             {
                 return NotFound();
             }
 
-            var user = _userRepository.Get().Where(x => x.Id == id).Select(x => new
+            var userModel = new UserViewModel
             {
-                x.Id,
-                x.Name,
-                x.Email,
-                x.PassHash,
-                x.PassSalt
-            }).SingleOrDefault();
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email
+            };
 
-            UserViewModel userDetails = new UserViewModel();
-
-            userDetails.Id = user.Id;
-            userDetails.Name = user.Name;
-            userDetails.Email = user.Email;
-
-            return View(userDetails);
+            return View(userModel);
         }
 
         [HttpPost]
@@ -182,25 +188,28 @@ namespace MvcMovie.Controllers
         }
 
         // GET: UserController/Delete/id
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete()
         {
-            if (id < 0 || !_userRepository.Exists(id))
+            var tokenDecoded = new JwtSecurityTokenHandler().ReadJwtToken(HttpContext.Session.GetString("token"));
+
+            var claimMail = tokenDecoded.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+            string userMail = claimMail?.Value;
+
+            var user = GetUserByEmailAsync(userMail);
+
+            if (user == null)
             {
                 return NotFound();
             }
 
-            var user = _userRepository.Get().Where(x => x.Id == id).Select(x => new
+            var userModel = new UserViewModel
             {
-                x.Name,
-                x.Email
-            }).SingleOrDefault();
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email
+            };
 
-            UserViewModel userDetails = new UserViewModel();
-
-            userDetails.Name = user.Name;
-            userDetails.Email = user.Email;
-
-            return View(userDetails);
+            return View(userModel);
         }
 
         // POST: UserController/Delete/id
@@ -293,7 +302,7 @@ namespace MvcMovie.Controllers
                 // Armazenar token de sessão
                 HttpContext.Session.SetString("token", token);
 
-                return RedirectToAction("Index", "User", new { id = user.Id });
+                return RedirectToAction("Index", "User");
             }
 
             return new JsonResult("Wrong Email");
