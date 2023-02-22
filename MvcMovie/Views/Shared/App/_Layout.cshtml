@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@*@using Microsoft.AspNetCore.Identity
+@using MvcMovieDAL.Entities;
+@using MvcMovieInfra.Repository
+@inject IRepository<User, MvcMovieContext> _userRepository*@
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -77,6 +82,14 @@
                         </a>
                     </div>
                 </div>
+            </li>
+
+            <!-- Nav Item - Favourites -->
+            <li class="nav-item">
+                <a class="nav-link" href="/Favourite/Index">
+                    <i class="fas fa-heart"></i>
+                    <span>Favourites</span>
+                </a>
             </li>
 
             <!-- Divider -->
@@ -267,7 +280,7 @@
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small"></span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Boas, @User.Identity.Name </span>
                                 <img class="img-profile rounded-circle" style="object-fit: cover;"
                                      src="https://raw.githubusercontent.com/Presentation12/Feedy/master/Frontend/angular/src/assets/images/pedrocrista.jpg">
                             </a>

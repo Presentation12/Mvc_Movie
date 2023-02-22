@@ -18,5 +18,6 @@ namespace MvcMovieDAL.Entities
         public string? Rating { get; set; }
         public int GenreId { get; set; }
         public virtual Genre Genre { get; set; }
+        public virtual ICollection<Favourite> Favourites { get; set; }
     }
 }

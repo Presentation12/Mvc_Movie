@@ -13,5 +13,6 @@ namespace MvcMovieDAL.Entities
         public string Email { get; set; }
         public string PassHash { get; set; }
         public string PassSalt { get; set; }
+        public virtual ICollection<Favourite> Favourites { get; set;}
     }
 }
