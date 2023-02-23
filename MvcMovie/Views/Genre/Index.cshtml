@@ -11,7 +11,7 @@
     <p>
         <div class="input-group">
             <input type="text" id="genre-filter" asp-for="SearchString" class="form-control" placeholder="Genre..." />
-            <input type="submit" id="search-button" value="Filter" class="btn btn-primary" />
+            <input type="submit" id="search-button" onclick="submitSearch(event)" value="Filter" class="btn btn-primary" />
         </div>
     </p>
 </form>
@@ -29,7 +29,7 @@
        data-page-list="[10, 25, 50, 100, all]"
        data-show-footer="true"
        data-side-pagination="server"
-       data-url="/Genre/paginate"
+       data-url="https://localhost:7180/Genre/Paginate"
        data-method="POST"
        data-search="false"
        data-show-columns="true">
@@ -54,7 +54,7 @@
                 </button>
             </div>
             <div class="modal-body">Select "Delete" below if you are ready to delete this genre.</div>
-            <form class="modal-footer" asp-action="Delete">
+            <form id="delete-form" class="modal-footer" asp-action="Delete">
                 <input type="hidden" id="delete-genre-id" name="id" />
                 <input type="submit" href="/Genre/Index" value="Delete" class="btn btn-danger" />
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
@@ -114,6 +114,25 @@
             $('#delete-genre-id').val(id);
         }
 
+        // trigger delete genre
+        $('#delete-form').submit(function (e) {
+            e.preventDefault();
+
+            var id = $('#delete-genre-id').val()
+
+            $.ajax({
+                url: 'https://localhost:7180/Genre/Delete/' + id,                              
+                type: 'POST',
+                contentType: 'application/json',
+                success: function (response) {
+                    window.location.href = "/Genre/Index";
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert('Delete failed: ' + errorThrown);
+                }
+            });
+        });
+
         window.operateEvents = {
             'click .like': function (e, value, row, index) {
                 alert('You click like action, row: ' + JSON.stringify(row))
@@ -126,18 +145,19 @@
             }
         }
 
+        // refresh the table when is submited the genre filter
+        function submitSearch(event) {
+            event.preventDefault()
+            $('#table').bootstrapTable('refresh')
+        }
+
         function queryParams(params) {
             const genreFilter = $('#genre-filter').val();
-            //const titleFilter = $('#title-filter').val();
             var search = [];
             search.push({
                 name: "Genre",
                 value: genreFilter
             });
-            //search.push({
-            //    name: "Title",
-            //    value: titleFilter
-            //});
             params.search = search;
             return JSON.stringify(params);
         }

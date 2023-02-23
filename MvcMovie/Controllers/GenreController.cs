@@ -10,38 +10,10 @@ namespace MvcMovie.Controllers
 {
     public class GenreController : Controller
     {
-        private readonly IRepository<Genre> _genreRepository;
-
-        public GenreController(IRepository<Genre> genreRepository)
-        {
-            _genreRepository = genreRepository;
-        }
-
         // GET: GenreController
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index()
         {
-            // Use LINQ to get list of genres.
-            var genreQuery = (from m in _genreRepository.Get()
-                                             orderby m.Name
-                                             select m).AsQueryable();
-
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                genreQuery = genreQuery.Where(s => s.Name!.StartsWith(searchString));
-            }
-
-            var genresView = await genreQuery.Select(x => new GenreViewModel()
-            {
-                Id = x.Id,
-                Name = x.Name
-            }).ToListAsync();
-
-            var movieGenreVM = new MovieGenreViewModel
-            {
-                Genres = new SelectList(await genreQuery.Distinct().ToListAsync())
-            };
-
-            return View(movieGenreVM);
+            return View();
         }
 
         // GET: GenreController/Create

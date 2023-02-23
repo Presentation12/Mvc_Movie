@@ -8,6 +8,7 @@ using MvcMovie.API.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MvcMovie.API.Controllers
 {
@@ -72,7 +73,8 @@ namespace MvcMovie.API.Controllers
             model.Limit = model.Limit.HasValue && model.Limit != 0 ? model.Limit.Value : int.MaxValue;
 
             // Get user loged
-            var tokenDecoded = new JwtSecurityTokenHandler().ReadJwtToken(HttpContext.Session.GetString("token"));
+            //var tokenDecoded = new JwtSecurityTokenHandler().ReadJwtToken(HttpContext.Session.GetString("token"));
+            var tokenDecoded = new JwtSecurityTokenHandler().ReadJwtToken(model.Search.FirstOrDefault(x => x.Name == "Token").Value);
 
             var claimMail = tokenDecoded.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
             string userMail = claimMail?.Value;
@@ -166,7 +168,7 @@ namespace MvcMovie.API.Controllers
         }
 
         // POST: FavouriteController/Delete/5
-        [HttpPost("Delete"), ActionName("Delete")]
+        [HttpPost("Delete/{id}"), ActionName("Delete")]
         public IActionResult Delete(int id)
         {
             if (_favouriteRepository.Get().Select(x => x.Movie) == null)

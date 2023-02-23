@@ -6,6 +6,7 @@ using MvcMovieDAL;
 using MvcMovieDAL.Entities;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MvcMovie.API.Controllers
 {
@@ -19,6 +20,23 @@ namespace MvcMovie.API.Controllers
         {
             _genreRepository = genreRepository;
         }
+
+        #region GET
+
+        // GET: Genres
+        [HttpGet("UsedGenres")]
+        public async Task<IActionResult> UsedGenres()
+        {
+            IQueryable<string> genreQuery = (from m in _genreRepository.Get()
+                                             orderby m.Name
+                                             select m.Name).AsQueryable();
+
+            var usedGenres = new SelectList(await genreQuery.Distinct().ToListAsync());
+
+            return new JsonResult(usedGenres);
+        }
+
+        #endregion
 
         #region POST
 
@@ -90,7 +108,7 @@ namespace MvcMovie.API.Controllers
         }
 
         // POST: GenreController/Delete/5
-        [HttpPost("Delete"), ActionName("Delete")]
+        [HttpPost("Delete/{id}"), ActionName("Delete")]
         public ActionResult Delete(int id)
         {
             if (_genreRepository.Get() == null)

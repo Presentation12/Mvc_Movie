@@ -11,11 +11,11 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form id="create-form" asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+                <input id="name" asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -30,4 +30,30 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+
+        // trigger create genre
+        $('#create-form').submit(function (e) {
+            e.preventDefault();
+
+            var data = {
+                Name: $('#name').val()
+            };
+
+            $.ajax({
+                url: 'https://localhost:7180/Genre/Create',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (response) {
+                    window.location.href = "/Genre/Index";
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert('Create failed: ' + errorThrown);
+                }
+            });
+        });
+
+    </script>
 }

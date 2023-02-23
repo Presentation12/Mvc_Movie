@@ -10,6 +10,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using Newtonsoft.Json.Linq;
 
 namespace MvcMovie.API.Controllers
 {
@@ -28,11 +29,40 @@ namespace MvcMovie.API.Controllers
 
         #region GET
 
+        // GET: UserController
+        [HttpGet("Index")]
+        public ActionResult Index(string token)
+        {
+            //Console.WriteLine("Token: " + HttpContext.Session.GetString("token"));
+            //var tokenDecoded = new JwtSecurityTokenHandler().ReadJwtToken(HttpContext.Session.GetString("token"));
+            var tokenDecoded = new JwtSecurityTokenHandler().ReadJwtToken(token);
+
+            var claimMail = tokenDecoded.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+            string userMail = claimMail?.Value;
+
+            var user = GetUserByEmailAsync(userMail);
+
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            var userModel = new UserViewModel
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email
+            };
+
+            return new JsonResult(userModel);
+        }
+
         // GET: UserController/Profile/id
         [HttpGet("Profile")]
-        public async Task<IActionResult> Profile()
+        public async Task<IActionResult> Profile(string token)
         {
-            var tokenDecoded = new JwtSecurityTokenHandler().ReadJwtToken(HttpContext.Session.GetString("token"));
+            //var tokenDecoded = new JwtSecurityTokenHandler().ReadJwtToken(HttpContext.Session.GetString("token"));
+            var tokenDecoded = new JwtSecurityTokenHandler().ReadJwtToken(token);
 
             var claimMail = tokenDecoded.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
             string userMail = claimMail?.Value;
@@ -56,9 +86,10 @@ namespace MvcMovie.API.Controllers
 
         // GET: UserController/Edit/id
         [HttpGet("Edit")]
-        public async Task<IActionResult> Edit()
+        public async Task<IActionResult> Edit(string token)
         {
-            var tokenDecoded = new JwtSecurityTokenHandler().ReadJwtToken(HttpContext.Session.GetString("token"));
+            //var tokenDecoded = new JwtSecurityTokenHandler().ReadJwtToken(HttpContext.Session.GetString("token"));
+            var tokenDecoded = new JwtSecurityTokenHandler().ReadJwtToken(token);
 
             var claimMail = tokenDecoded.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
             string userMail = claimMail?.Value;
@@ -75,6 +106,7 @@ namespace MvcMovie.API.Controllers
                 Id = user.Id,
                 Name = user.Name,
                 Email = user.Email
+                //password
             };
 
             return new JsonResult(userModel);
@@ -122,12 +154,12 @@ namespace MvcMovie.API.Controllers
         }
 
         [HttpPost("Edit")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Email,Password")] UserViewModel user)
+        public async Task<IActionResult> Edit([Bind("Id,Name,Email,Password")] UserViewModel user)
         {
-            if (id != user.Id)
-            {
-                return NotFound(new { error = "User not found." });
-            }
+            //if (id != user.Id)
+            //{
+            //    return NotFound(new { error = "User not found." });
+            //}
 
             if (ModelState.IsValid)
             {
@@ -165,7 +197,7 @@ namespace MvcMovie.API.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!_userRepository.Exists(id))
+                    if (!_userRepository.Exists(user.Id))
                     {
                         return NotFound(new { error = "User not found." });
                     }
@@ -180,14 +212,17 @@ namespace MvcMovie.API.Controllers
 
         // POST: UserController/Delete/id
         [HttpPost("Delete"), ActionName("Delete")]
-        public async Task<IActionResult> Delete()
+        public async Task<IActionResult> Delete([FromBody] JObject data)
         {
+            var token = data["token"].ToString();
+
             if (_userRepository.Get() == null)
             {
                 return NotFound(new { error = "User list empty." });
             }
 
-            var tokenDecoded = new JwtSecurityTokenHandler().ReadJwtToken(HttpContext.Session.GetString("token"));
+            //var tokenDecoded = new JwtSecurityTokenHandler().ReadJwtToken(HttpContext.Session.GetString("token"));
+            var tokenDecoded = new JwtSecurityTokenHandler().ReadJwtToken(token);
 
             var claimMail = tokenDecoded.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
             string userMail = claimMail?.Value;
@@ -222,14 +257,7 @@ namespace MvcMovie.API.Controllers
                 // Armazenar token de sessão
                 HttpContext.Session.SetString("token", token);
 
-                //var identity = new ClaimsIdentity("Cookies");
-                //identity.AddClaim(new Claim(ClaimTypes.Name, user.Name));
-                //identity.AddClaim(new Claim(ClaimTypes.Email, user.Email));
-
-                //var principal = new ClaimsPrincipal(identity);
-                //await HttpContext.SignInAsync("Cookies", principal, new AuthenticationProperties { IsPersistent = false });
-
-                return new JsonResult(true) { StatusCode = 200 };
+                return new JsonResult(token) { StatusCode = 200 };
             }
 
             return NotFound("Wrong Email");

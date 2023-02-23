@@ -22,3 +22,15 @@ D:\IPCATeam\MvcMovie\MvcMovieApplication\obj\Debug\net6.0\MvcMovieApplication.dl
 D:\IPCATeam\MvcMovie\MvcMovieApplication\obj\Debug\net6.0\refint\MvcMovieApplication.dll
 D:\IPCATeam\MvcMovie\MvcMovieApplication\obj\Debug\net6.0\MvcMovieApplication.pdb
 D:\IPCATeam\MvcMovie\MvcMovieApplication\obj\Debug\net6.0\ref\MvcMovieApplication.dll
+C:\Users\joaoc\Desktop\MvcMovie\MvcMovieApplication\bin\Debug\net6.0\MvcMovieApplication.deps.json
+C:\Users\joaoc\Desktop\MvcMovie\MvcMovieApplication\bin\Debug\net6.0\MvcMovieApplication.dll
+C:\Users\joaoc\Desktop\MvcMovie\MvcMovieApplication\bin\Debug\net6.0\MvcMovieApplication.pdb
+C:\Users\joaoc\Desktop\MvcMovie\MvcMovieApplication\obj\Debug\net6.0\MvcMovieApplication.csproj.AssemblyReference.cache
+C:\Users\joaoc\Desktop\MvcMovie\MvcMovieApplication\obj\Debug\net6.0\MvcMovieApplication.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\joaoc\Desktop\MvcMovie\MvcMovieApplication\obj\Debug\net6.0\MvcMovieApplication.AssemblyInfoInputs.cache
+C:\Users\joaoc\Desktop\MvcMovie\MvcMovieApplication\obj\Debug\net6.0\MvcMovieApplication.AssemblyInfo.cs
+C:\Users\joaoc\Desktop\MvcMovie\MvcMovieApplication\obj\Debug\net6.0\MvcMovieApplication.csproj.CoreCompileInputs.cache
+C:\Users\joaoc\Desktop\MvcMovie\MvcMovieApplication\obj\Debug\net6.0\MvcMovieApplication.dll
+C:\Users\joaoc\Desktop\MvcMovie\MvcMovieApplication\obj\Debug\net6.0\refint\MvcMovieApplication.dll
+C:\Users\joaoc\Desktop\MvcMovie\MvcMovieApplication\obj\Debug\net6.0\MvcMovieApplication.pdb
+C:\Users\joaoc\Desktop\MvcMovie\MvcMovieApplication\obj\Debug\net6.0\ref\MvcMovieApplication.dll

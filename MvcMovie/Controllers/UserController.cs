@@ -13,55 +13,24 @@ using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Principal;
+using Newtonsoft.Json;
 
 namespace MvcMovie.Controllers
 {
     public class UserController : Controller
     {
-        private readonly IConfiguration _configuration;
-        private readonly IRepository<User> _userRepository;
+        //private readonly IConfiguration _configuration;
+        //private readonly IRepository<User> _userRepository;
 
-        public UserController(IConfiguration configuration, IRepository<User> userRepository)
+        //public UserController(IConfiguration configuration, IRepository<User> userRepository)
+        //{
+        //    _configuration = configuration;
+        //    _userRepository = userRepository;
+        //}
+
+        public async Task<IActionResult> Index()
         {
-            _configuration = configuration;
-            _userRepository = userRepository;
-        }
-
-        public User GetUserByEmailAsync(string email)
-        {
-            return _userRepository.Get().Where(x => x.Email == email).SingleOrDefault();
-        }
-
-        // GET: UserController
-        public ActionResult Index()
-        {
-            //// Verificar se o usuário está autenticado
-            //if (!User.Identity.IsAuthenticated)
-            //{
-            //    return RedirectToAction("Login", "User");
-            //}
-
-            var tokenDecoded = new JwtSecurityTokenHandler().ReadJwtToken(HttpContext.Session.GetString("token"));
-
-            var claimMail = tokenDecoded.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
-            string userMail = claimMail?.Value;
-
-            var user = GetUserByEmailAsync(userMail);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            var userModel = new UserViewModel
-            {
-                Id = user.Id,
-                Name = user.Name,
-                Email = user.Email
-            };
-
-            return View(userModel);
-
+            return View();
         }
 
         // GET: UserController/Profile/id

@@ -11,24 +11,24 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form id="edit-form" asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+            <input id="id-user" type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+                <input id="name" asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
+                <input id="email" asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <hr />
             <div class="form-group">
                 <label asp-for="Password" class="control-label"></label>
                 <div class="input-group">
-                    <input asp-for="Password" required="true" class="form-control" type="password" />
+                    <input id="password" asp-for="Password" required="true" class="form-control" type="password" />
                     <div class="input-group-append">
                         <button type="button" class="btn btn-outline-secondary" onclick="togglePassword()">
                             <i class="fa fa-eye" aria-hidden="true"></i>
@@ -50,6 +50,7 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script>
+        
         function togglePassword() {
             var passwordInput = document.querySelector('input[name="Password"]');
             var passwordIcon = document.querySelector('.fa-eye');
@@ -64,6 +65,62 @@
                 passwordIcon.classList.add('fa-eye');
             }
         }
+
+        var token = localStorage.getItem('token');
+        var dataGet = {
+            token: token
+        };
+
+        $.ajax({
+
+            url: 'https://localhost:7180/User/Edit',
+            type: 'get',
+            datatype: 'json',
+            data: dataGet,
+            headers: {
+                'authorization': 'bearer ' + token
+            },
+            success: function (data) {
+                $('#id-user').val(data.id);
+                $('#name').val(data.name);
+                $('#email').val(data.email);
+                $('#password').val(data.password);
+            },
+            error: function (jqxhr, textstatus, errorthrown) {
+                alert('erro ao obter modelo de usuário: ' + errorthrown);
+            }
+        });
+
+        // trigger edit genre
+        $('#edit-form').submit(function (e) {
+            e.preventDefault();
+
+            var dataPost = {
+                Id: $('#id-user').val(),
+                Name: $('#name').val(),
+                Email: $('#email').val(),
+                Password: $('#password').val()
+            };
+
+            console.log("Id: " + dataPost.Id);
+            console.log("Name: " + dataPost.Name);
+            console.log("Email: " + dataPost.Email);
+            console.log("Password: " + dataPost.Password);
+
+            $.ajax({
+                url: 'https://localhost:7180/User/Edit',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(dataPost),
+                success: function (data) {
+                    window.location.href = "/User/Profile";
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert('Edit failed: ' + errorThrown);
+                }
+            });
+        });
+
     </script>
 }
 

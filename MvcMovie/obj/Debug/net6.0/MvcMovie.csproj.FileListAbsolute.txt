@@ -1162,3 +1162,4 @@ C:\Users\joaoc\Desktop\MvcMovie\MvcMovie\bin\Debug\net6.0\refs\WindowsBase.dll
 C:\Users\joaoc\Desktop\MvcMovie\MvcMovie\bin\Debug\net6.0\Microsoft.AspNetCore.Mvc.Razor.Extensions.dll
 C:\Users\joaoc\Desktop\MvcMovie\MvcMovie\bin\Debug\net6.0\Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation.dll
 C:\Users\joaoc\Desktop\MvcMovie\MvcMovie\obj\Debug\net6.0\MvcMovie.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\joaoc\Desktop\MvcMovie\MvcMovie\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

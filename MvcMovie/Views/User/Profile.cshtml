@@ -14,13 +14,13 @@
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
-        <dd class = "col-sm-10">
+        <dd id="name" class = "col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Email)
         </dt>
-        <dd class = "col-sm-10">
+        <dd id="email" class="col-sm-10">
             @Html.DisplayFor(model => model.Email)
         </dd>
     </dl>
@@ -42,7 +42,7 @@
                 </button>
             </div>
             <div class="modal-body">Select "Delete" below if you are ready to delete your account.</div>
-            <form class="modal-footer" asp-action="Delete">
+            <form id="delete-form" class="modal-footer" asp-action="Delete">
                 <input type="hidden" id="delete-user-id" name="id" />
                 <input type="submit" href="/User/Login" value="Delete" class="btn btn-danger" />
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
@@ -54,10 +54,50 @@
 @section scripts {
     <script>
 
+        var token = localStorage.getItem('token');
+        var data = {
+            token: token
+        };
+
+        $.ajax({
+            url: 'https://localhost:7180/User/Profile',
+            type: 'GET',
+            dataType: 'json',
+            data: data,
+            headers: {
+                'Authorization': 'Bearer ' + token
+            },
+            success: function (data) {
+                $('#name').text(data.name);
+                $('#email').text(data.email);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Erro ao obter modelo de usuário: ' + errorThrown);
+            }
+        });
+
         // store the user id (called on delete confirmation pop-up)
         function deleteUser(id) {
             $('#delete-user-id').val(id);
         }
+
+        // trigger delete user
+        $('#delete-form').submit(function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: 'https://localhost:7180/User/Delete',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (data) {
+                    window.location.href = "/User/Login";
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert('Delete failed: ' + errorThrown);
+                }
+            });
+        });
 
     </script>
 } 

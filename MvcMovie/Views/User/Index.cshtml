@@ -5,10 +5,66 @@
     ViewData["Title"] = "Index";
 }
 
+@section Scripts {
+    <script>
+        var token = localStorage.getItem('token');
+
+        //$.ajax({
+        //    url: 'https://localhost:7180/User/Index',
+        //    type: 'GET',
+        //    dataType: 'json',
+        //    beforeSend: function (xhr) {
+        //        xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+        //    },
+        //    success: function (data) {
+        //        $('h4').text('Welcome ' + data.name + '!');
+        //        alert('Sucesso');
+        //    },
+        //    error: function (jqXHR, textStatus, errorThrown) {
+        //        alert('Erro ao obter modelo de usuário: ' + errorThrown);
+        //    }
+        //});
+
+        //$.ajax({
+        //    url: 'https://localhost:7180/User/Index',
+        //    type: 'GET',
+        //    dataType: 'json',
+        //    success: function (data) {
+        //        $('h4').text('Welcome ' + data.name + '!');
+        //        alert('Sucesso');
+        //    },
+        //    error: function (jqXHR, textStatus, errorThrown) {
+        //        alert('Erro ao obter modelo de usuário: ' + errorThrown);
+        //    }
+        //});
+
+        var data = {
+            token: token
+        };
+
+        $.ajax({
+            url: 'https://localhost:7180/User/Index',
+            type: 'GET',
+            dataType: 'json',
+            data: data,
+            headers: {
+                'Authorization': 'Bearer ' + token
+            },
+            success: function (data) {
+                $('h4').text('Welcome ' + data.name + '!');
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Erro ao obter modelo de usuário: ' + errorThrown);
+            }
+        });
+
+    </script>
+}
+
 <h1>Index</h1>
 
 <div>
-    <h4>Welcome @Model.Name!</h4>
+    <h4></h4>
     <hr />
 
 </div>

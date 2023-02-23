@@ -67,6 +67,8 @@ namespace MvcMovie.API
                 app.UseSwaggerUI();
             }
 
+            app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
@@ -74,6 +76,8 @@ namespace MvcMovie.API
             app.UseAuthentication();
 
             app.UseCookiePolicy();
+
+            app.UseRouting();
 
             app.UseSession();
 
