@@ -19,63 +19,31 @@ namespace MvcMovie.Controllers
 {
     public class UserController : Controller
     {
-        //private readonly IConfiguration _configuration;
-        //private readonly IRepository<User> _userRepository;
-
-        //public UserController(IConfiguration configuration, IRepository<User> userRepository)
-        //{
-        //    _configuration = configuration;
-        //    _userRepository = userRepository;
-        //}
-
+        // GET: User
         public async Task<IActionResult> Index()
         {
             return View();
         }
 
-        // GET: UserController/Profile/id
+        // GET: User/Profile/id
         public async Task<IActionResult> Profile()
         {
             return View();
         }
 
-        // GET: UserController/Create
+        // GET: User/Create
         public async Task<IActionResult> Create()
         {
             return View();
         }
 
-        // GET: UserController/Edit/id
+        // GET: User/Edit/id
         public async Task<IActionResult> Edit()
         {
             return View();
         }
 
-        // GET: UserController/Delete/id
-        //public async Task<IActionResult> Delete()
-        //{
-        //    var tokenDecoded = new JwtSecurityTokenHandler().ReadJwtToken(HttpContext.Session.GetString("token"));
-
-        //    var claimMail = tokenDecoded.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
-        //    string userMail = claimMail?.Value;
-
-        //    var user = GetUserByEmailAsync(userMail);
-
-        //    if (user == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var userModel = new UserViewModel
-        //    {
-        //        Id = user.Id,
-        //        Name = user.Name,
-        //        Email = user.Email
-        //    };
-
-        //    return View(userModel);
-        //}
-
+        // GET: User/Login
         public IActionResult Login(/*string returnUrl*/)
         {
             //// Verifica se o usuário já está autenticado

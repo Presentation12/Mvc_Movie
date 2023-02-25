@@ -12,46 +12,21 @@ namespace MvcMovie.Controllers
 {
     public class FavouriteController : Controller
     {
-        // GET: FavouriteController
+        // GET: Favourite
         public async Task<IActionResult> Index()
         {
             return View();
         }
 
-        // GET: FavouriteController/Details/5
-        public async Task<IActionResult> Details()
+        // GET: Favourite/Details/5
+        public async Task<IActionResult> Details(int id)
         {
-            return View();
+            var viewModelMovie = new MovieViewModel();
+
+            viewModelMovie.Id = id;
+
+            return View(viewModelMovie);
         }
-
-        //public async Task<IActionResult> Delete(int id)
-        //{
-        //    if (id < 0 || _favouriteRepository.Get().Where(x => x.Movie.Id == id).SingleOrDefault() == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var movie = _favouriteRepository.Get().Where(x => x.Movie.Id == id).Include(x => x.Movie.Genre).Select(x => new
-        //    {
-        //        x.Movie.Id,
-        //        x.Movie.Title,
-        //        x.Movie.ReleaseDate,
-        //        GenreName = x.Movie.Genre.Name,
-        //        x.Movie.Price,
-        //        x.Movie.Rating
-        //    }).SingleOrDefault();
-
-        //    MovieViewModel movieView = new MovieViewModel();
-
-        //    movieView.Id = movie.Id;
-        //    movieView.Title = movie.Title;
-        //    movieView.Price = movie.Price;
-        //    movieView.ReleaseDate = movie.ReleaseDate;
-        //    movieView.Rating = movie.Rating;
-        //    movieView.Genre = movie.GenreName;
-
-        //    return View(movieView);
-        //}
 
     }
 }

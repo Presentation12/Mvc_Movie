@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json.Linq;
 
 namespace MvcMovie.API.Controllers
 {
@@ -34,14 +35,29 @@ namespace MvcMovie.API.Controllers
 
         // GET: FavouriteController/Details/5
         [HttpGet("Details")]
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(int idMovie, string token)
         {
-            if (id < 0 || _favouriteRepository.Get().Where(x => x.Movie.Id == id).SingleOrDefault() == null)
+
+            // Get user loged
+            //var tokenDecoded = new JwtSecurityTokenHandler().ReadJwtToken(HttpContext.Session.GetString("token"));
+            var tokenDecoded = new JwtSecurityTokenHandler().ReadJwtToken(token);
+
+            var claimMail = tokenDecoded.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+            string userMail = claimMail?.Value;
+
+            var user = GetUserByEmailAsync(userMail);
+
+            if (user == null)
+            {
+                return new JsonResult(new { error = "User not found." }) { StatusCode = 404 };
+            }
+
+            if (idMovie < 0 || _favouriteRepository.Get().Where(x => x.Movie.Id == idMovie && x.User.Id == user.Id).SingleOrDefault() == null)
             {
                 return NotFound("Favourite Movie not found.");
             }
 
-            var movie = _favouriteRepository.Get().Where(x => x.Movie.Id == id).Include(x => x.Movie.Genre).Select(x => new
+            var movie = _favouriteRepository.Get().Where(x => x.Movie.Id == idMovie && x.User.Id == user.Id).Include(x => x.Movie.Genre).Select(x => new
             {
                 x.Movie.Id,
                 x.Movie.Title,
@@ -125,12 +141,16 @@ namespace MvcMovie.API.Controllers
 
         // POST: FavouriteController/Update
         [HttpPost("Update")]
-        public async Task<IActionResult> Update(int idMovie)
+        public async Task<IActionResult> Update([FromBody] JObject data)
         {
+            int idMovie = (int)data["idMovie"];
+            string token = data["token"].ToString();
+
             Movie movieEntitie = _movieRepository.Get().Where(x => x.Id == idMovie).Include(x => x.Genre).SingleOrDefault();
 
             // Get user loged
-            var tokenDecoded = new JwtSecurityTokenHandler().ReadJwtToken(HttpContext.Session.GetString("token"));
+            //var tokenDecoded = new JwtSecurityTokenHandler().ReadJwtToken(HttpContext.Session.GetString("token"));
+            var tokenDecoded = new JwtSecurityTokenHandler().ReadJwtToken(token);
 
             var claimMail = tokenDecoded.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
             string userMail = claimMail?.Value;
@@ -168,15 +188,33 @@ namespace MvcMovie.API.Controllers
         }
 
         // POST: FavouriteController/Delete/5
-        [HttpPost("Delete/{id}"), ActionName("Delete")]
-        public IActionResult Delete(int id)
+        [HttpPost("Delete"), ActionName("Delete")]
+        public IActionResult Delete([FromBody] JObject data) //int id, string token
         {
+            int idMovie = (int)data["idMovie"];
+            string token = data["token"].ToString();
+
             if (_favouriteRepository.Get().Select(x => x.Movie) == null)
             {
                 return NotFound(new { error = "Favourite Movie list empty." });
             }
 
-            var movie = _favouriteRepository.Get().Where(x => x.Movie.Id == id).Include(x => x.Movie.Genre).SingleOrDefault();
+            // Get user loged
+            //var tokenDecoded = new JwtSecurityTokenHandler().ReadJwtToken(HttpContext.Session.GetString("token"));
+            var tokenDecoded = new JwtSecurityTokenHandler().ReadJwtToken(token);
+
+            var claimMail = tokenDecoded.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+            string userMail = claimMail?.Value;
+
+            var user = GetUserByEmailAsync(userMail);
+
+            if (user == null)
+            {
+                return new JsonResult(new { error = "User not found." }) { StatusCode = 404 };
+            }
+
+            // movie that belongs to the user logged
+            var movie = _favouriteRepository.Get().Where(x => x.Movie.Id == idMovie && x.User.Id == user.Id).SingleOrDefault();
 
             if (movie != null)
             {

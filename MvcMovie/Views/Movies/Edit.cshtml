@@ -11,38 +11,38 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form id="edit-form">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+            <input type="hidden" value="@Model.Id" id="id-movie" />
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
+                <input id="title" asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ReleaseDate" class="control-label"></label>
-                <input asp-for="ReleaseDate" class="form-control" />
+                <input id="releaseDate" asp-for="ReleaseDate" class="form-control" />
                 <span asp-validation-for="ReleaseDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <div style="display: flex;">
                     <label asp-for="Genre" class="control-label" style="width: 100%;"></label>
                 </div>
-                <select class="js-example-basic-single" style="width: 200px" asp-for="Genre" asp-items="Model.Genres" id="genre">
-                    <option value="">-</option>
+                <select id="genre" class="form-control" asp-for="Genre">
+                    <option value=""></option>
                 </select>
                 <span asp-validation-for="Genre" class="text-danger"></span>
 
-                <a style="display: flex;" href="/Genre/Create" class="">Doesn't have the gender i want?</a>
+                <a style="display: flex;" href="/Genre/Create" class="">Doesn't have the gender that you want?</a>
             </div>
             <div class="form-group">
                 <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
+                <input id="price" asp-for="Price" class="form-control" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Rating" class="control-label"></label>
-                <input asp-for="Rating" class="form-control" />
+                <input id="rating" asp-for="Rating" class="form-control" />
                 <span asp-validation-for="Rating" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -56,8 +56,92 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
+
+        var select = $('#genre');
+
+        // select 2
         $(document).ready(function () {
-            $('.js-example-basic-single').select2();
+            select.select2();
         });
+
+        // get genre filter options
+        $.ajax({
+            url: 'https://localhost:7180/Genre/UsedGenres',
+            type: 'GET',
+            success: function (response) {
+                $.each(response, function (index, item) {
+                    select.append('<option>' + item.text + '</option>');
+                });
+            }
+        });
+
+        var idMovie = $('#id-movie').val()
+        var data = {
+            idMovie: idMovie
+        };
+
+        // get current movie data
+        $.ajax({
+            url: 'https://localhost:7180/Movies/Edit',
+            type: 'GET',
+            dataType: 'json',
+            data: data,
+            success: function (data) {
+                $('#title').val(data.title);
+                $('#releaseDate').val(new Date(data.releaseDate).toISOString().slice(0, 10));
+                $('#genre').val(data.genre);
+                $('#price').val(data.price);
+                $('#rating').val(data.rating);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Erro ao obter modelo de usuário: ' + errorThrown);
+            }
+        });
+
+        //trigger edit movie
+        $('#edit-form').submit(function (e) {
+            e.preventDefault();
+
+            var data = {
+                Id: $('#id-movie').val(),
+                Title: $('#title').val(),
+                ReleaseDate: $('#releaseDate').val(),
+                Genre: $('#genre').val(),
+                Price: $('#price').val(),
+                Rating: $('#rating').val(),
+            };
+
+            $.ajax({
+                url: 'https://localhost:7180/Movies/Edit',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (response) {
+                    window.location.href = "/Movies/Index";
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert('Edit failed: ' + errorThrown);
+                }
+            });
+        });
+
+        // data formatation
+        function dateFormat(value, row, index) {
+            if (value) {
+                var date = new Date(value);
+                var day = date.getDate();
+                var month = date.getMonth() + 1;
+                var year = date.getFullYear();
+
+                // Adiciona um zero à esquerda para dias e meses menores que 10
+                day = day < 10 ? '0' + day : day;
+                month = month < 10 ? '0' + month : month;
+
+                // Formata a data no formato desejado
+                return day + '-' + month + '-' + year;
+            } else {
+                return '-';
+            }
+        }
     </script>
 }

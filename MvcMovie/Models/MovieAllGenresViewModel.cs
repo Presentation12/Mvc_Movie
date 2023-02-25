@@ -4,6 +4,7 @@ namespace MvcMovie.Models
 {
     public class MovieAllGenresViewModel : MovieViewModel
     {
+        public MovieAllGenresViewModel() { }
         public MovieAllGenresViewModel(SelectList genres, int Id, string Title, decimal Price, DateTime ReleaseDate, string Rating)
         {
             Genres = genres;

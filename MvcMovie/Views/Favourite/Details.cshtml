@@ -8,37 +8,38 @@
 <h1>Details</h1>
 
 <div>
+    <input type="hidden" id="id-movie" value="@Model.Id" />
     <h4>Movie</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Title)
         </dt>
-        <dd class="col-sm-10">
+        <dd id="title" class="col-sm-10">
             @Html.DisplayFor(model => model.Title)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ReleaseDate)
         </dt>
-        <dd class="col-sm-10">
+        <dd id="releaseDate" class="col-sm-10">
             @Html.DisplayFor(model => model.ReleaseDate)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Genre)
         </dt>
-        <dd class="col-sm-10">
+        <dd id="genre" class="col-sm-10">
             @Html.DisplayFor(model => model.Genre)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Price)
         </dt>
-        <dd class="col-sm-10">
+        <dd id="price" class="col-sm-10">
             @Html.DisplayFor(model => model.Price)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Rating)
         </dt>
-        <dd class="col-sm-10">
+        <dd id="rating" class="col-sm-10">
             @Html.DisplayFor(model => model.Rating)
         </dd>
     </dl>
@@ -46,3 +47,54 @@
 <div>
     <a asp-action="Index" class="btn btn-primary">Back to List</a>
 </div>
+
+@section scripts {
+    <script>
+
+        var token = localStorage.getItem('token');
+        var idMovie = $('#id-movie').val()
+        var data = {
+            token: token,
+            idMovie: idMovie
+        };
+
+        $.ajax({
+            url: 'https://localhost:7180/Favourite/Details',
+            type: 'GET',
+            dataType: 'json',
+            data: data,
+            headers: {
+                'Authorization': 'Bearer ' + token
+            },
+            success: function (data) {
+                $('#title').text(data.title);
+                $('#releaseDate').text(dateFormat(data.releaseDate));
+                $('#genre').text(data.genre);
+                $('#price').text(data.price);
+                $('#rating').text(data.rating);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Erro ao obter modelo de usuário: ' + errorThrown);
+            }
+        });
+
+        function dateFormat(value, row, index) {
+            if (value) {
+                var date = new Date(value);
+                var day = date.getDate();
+                var month = date.getMonth() + 1;
+                var year = date.getFullYear();
+
+                // Adiciona um zero à esquerda para dias e meses menores que 10
+                day = day < 10 ? '0' + day : day;
+                month = month < 10 ? '0' + month : month;
+
+                // Formata a data no formato desejado
+                return day + '-' + month + '-' + year;
+            } else {
+                return '-';
+            }
+        }
+
+    </script>
+} 

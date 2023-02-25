@@ -15,7 +15,7 @@
 
         <div class="input-group">
             <input type="text" id="title-filter" asp-for="SearchString" class="form-control" placeholder="Movie..." />
-            <input type="submit" id="search-button" value="Filter" class="btn btn-primary" />
+            <input type="submit" id="search-button" value="Filter" onclick="submitSearch(event)" class="btn btn-primary" />
         </div>
     </p>
 </form>
@@ -25,6 +25,7 @@
        data-show-fullscreen="true"
        data-query-params="queryParams"
        data-detail-view="true"
+       data-detail-formatter="detailFormatter"
        data-pagination="true"
        data-id-field="id"
        data-page-list="[10, 25, 50, 100, all]"
@@ -39,7 +40,6 @@
             <th data-field="title">Title</th>
             <th data-field="releaseDate" data-formatter="dateFormat">Release Date</th>
             <th data-field="genreName">Genre</th>
-            <th data-field="price">Price</th>
             <th data-field="rating">Rating</th>
             <th data-field="" data-formatter="operateFormatter">Actions</th>
         </tr>
@@ -83,6 +83,7 @@
         var $table = $('#table')
         var $remove = $('#remove')
         var selections = []
+        var token = localStorage.getItem('token');
 
         function getIdSelections() {
             return $.map($table.bootstrapTable('getSelections'), function (row) {
@@ -128,7 +129,7 @@
                     select.append('<option>' + item.text + '</option>');
                 });
             }
-        }); 
+        });
 
         // refresh the table when is submited the genre filter
         function submitSearch(event) {
@@ -141,16 +142,22 @@
             $('#delete-favourite-id').val(id);
         }
 
-        // trigger delete genre
+        // trigger delete fav
         $('#delete-form').submit(function (e) {
             e.preventDefault();
 
-            var id = $('#delete-favourite-id').val()
+            var idMovie = $('#delete-favourite-id').val()
+
+            var data = {
+                token: token,
+                idMovie: idMovie
+            };
 
             $.ajax({
-                url: 'https://localhost:7180/Favourite/Delete/' + id,
+                url: 'https://localhost:7180/Favourite/Delete',
                 type: 'POST',
                 contentType: 'application/json',
+                data: JSON.stringify(data),
                 success: function (response) {
                     window.location.href = "/Favourite/Index";
                 },
@@ -176,7 +183,6 @@
             const genreFilter = $('#genre-filter').val();
             const titleFilter = $('#title-filter').val();
             var search = [];
-            var token = localStorage.getItem('token');
 
             search.push({
                 name: "Genre",
@@ -214,6 +220,13 @@
             } else {
                 return '-';
             }
+        }
+
+        function detailFormatter(index, row) {
+            var html = [];
+            html.push('<p><b>Id: </b> ' + row.id + '</p>');
+            html.push('<p><b>Price: </b> ' + row.price + '</p>');
+            return html.join('');
         }
 
     </script>

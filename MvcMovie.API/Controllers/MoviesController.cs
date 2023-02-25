@@ -27,14 +27,14 @@ namespace MvcMovie.API.Controllers
         #region GET 
 
         [HttpGet("Details")]
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(int idMovie)
         {
-            if (id < 0 || !_movieRepository.Exists(id))
+            if (idMovie < 0 || !_movieRepository.Exists(idMovie))
             {
                 return NotFound("Movie not found.");
             }
 
-            var movie = _movieRepository.Get().Where(x => x.Id == id).Include(x => x.Genre).Select(x => new
+            var movie = _movieRepository.Get().Where(x => x.Id == idMovie).Include(x => x.Genre).Select(x => new
             {
                 x.Id,
                 x.Title,
@@ -77,14 +77,14 @@ namespace MvcMovie.API.Controllers
 
         // GET: Movies/Edit/5
         [HttpGet("Edit")]
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int idMovie)
         {
-            if (id < 0 || !_movieRepository.Exists(id))
+            if (idMovie < 0 || !_movieRepository.Exists(idMovie))
             {
                 return NotFound("Movie not found.");
             }
 
-            var movie = _movieRepository.Get().Where(x => x.Id == id).Include(x => x.Genre).Select(x => new
+            var movie = _movieRepository.Get().Where(x => x.Id == idMovie).Include(x => x.Genre).Select(x => new
             {
                 x.Id,
                 x.Title,
@@ -95,25 +95,22 @@ namespace MvcMovie.API.Controllers
             }).SingleOrDefault();
 
             // Use LINQ to get list of genres.
-            IQueryable<string> genreQuery = (from m in _genreRepository.Get()
-                                             orderby m.Name
-                                             select m.Name).AsQueryable();
+            //IQueryable<string> genreQuery = (from m in _genreRepository.Get()
+            //                                 orderby m.Name
+            //                                 select m.Name).AsQueryable();
 
             //Verificar quando estiver vazio
 
-            var movieGenreVM = new MovieAllGenresViewModel
-            (
-                new SelectList(genreQuery),
-                movie.Id,
-                movie.Title,
-                movie.Price,
-                movie.ReleaseDate,
-                movie.Rating
-            );
+            MovieViewModel movieDetails = new MovieViewModel();
 
-            movieGenreVM.Genre = movie.GenreName;
+            movieDetails.Id = movie.Id;
+            movieDetails.Title = movie.Title;
+            movieDetails.ReleaseDate = movie.ReleaseDate;
+            movieDetails.Rating = movie.Rating;
+            movieDetails.Price = movie.Price;
+            movieDetails.Genre = movie.GenreName;
 
-            return new JsonResult(movieGenreVM);
+            return new JsonResult(movieDetails);
         }
 
         #endregion
@@ -165,7 +162,7 @@ namespace MvcMovie.API.Controllers
         // POST: Movies/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         [HttpPost("Create")]
-        public async Task<IActionResult> Create([Bind("Id,Title,ReleaseDate,Genre,Price,Rating")] MovieViewModel movie)
+        public async Task<IActionResult> Create([Bind("Title,ReleaseDate,Genre,Price,Rating")] MovieViewModel movie)
         {
             if (ModelState.IsValid)
             {
@@ -206,13 +203,8 @@ namespace MvcMovie.API.Controllers
         // POST: Movies/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         [HttpPost("Edit")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ReleaseDate,Genre,Price,Rating")] MovieViewModel movie)
+        public async Task<IActionResult> Edit([Bind("Id,Title,ReleaseDate,Genre,Price,Rating")] MovieViewModel movie)
         {
-            if (id != movie.Id)
-            {
-                return NotFound("Movie not found.");
-            }
-
             if (ModelState.IsValid)
             {
                 try
@@ -258,19 +250,19 @@ namespace MvcMovie.API.Controllers
         }
 
         // POST: Movies/Delete/5
-        [HttpPost("Delete"), ActionName("Delete")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpPost("Delete/{idMovie}"), ActionName("Delete")]
+        public async Task<IActionResult> Delete(int idMovie)
         {
-            if (_movieRepository.Get() == null)
+            if (idMovie < 0 || _movieRepository.Get() == null)
             {
                 return NotFound(new { error = "Movie list empty." });
             }
 
-            var movie = _movieRepository.Get().Where(x => x.Id == id).Include(x => x.Genre).SingleOrDefault();
+            var movie = _movieRepository.Get().Where(x => x.Id == idMovie).Include(x => x.Genre).SingleOrDefault();
 
             if (movie != null)
             {
-                _movieRepository.Delete(id);
+                _movieRepository.Delete(movie.Id);
             }
 
             _movieRepository.Save();

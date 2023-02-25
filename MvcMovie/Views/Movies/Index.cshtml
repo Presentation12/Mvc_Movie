@@ -10,13 +10,13 @@
 <!-- Filters -->
 <form id="form-filter" asp-controller="Movies" asp-action="Index" method="get">
     <p>
-        <select id="genre-filter" asp-for="MovieGenre" asp-items="Model.Genres" class="form-control">
+        <select id="genre-filter" class="form-control">
             <option value="">All</option>
         </select>
 
         <div class="input-group">
             <input type="text" id="title-filter" asp-for="SearchString" class="form-control" placeholder="Movie..." />
-            <input type="submit" id="search-button" value="Filter" class="btn btn-primary" />
+            <input type="submit" id="search-button" value="Filter" onclick="submitSearch(event)" class="btn btn-primary" />
         </div>
     </p>
 </form>
@@ -64,9 +64,9 @@
                 </button>
             </div>
             <div class="modal-body">Select "Delete" below if you are ready to delete this movie.</div>
-            <form class="modal-footer" asp-action="Delete">
+            <form id="delete-form" class="modal-footer">
                 <input type="hidden" id="delete-movie-id" name="id" />
-                <input type="submit" href="/Movies/Index" value="Delete" class="btn btn-danger" />
+                <input type="submit" value="Delete" class="btn btn-danger" />
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
             </form>
         </div>
@@ -89,6 +89,7 @@
         var $table = $('#table')
         var $remove = $('#remove')
         var selections = []
+        var token = localStorage.getItem('token'); // usada apenas no fav
 
         function getIdSelections() {
             return $.map($table.bootstrapTable('getSelections'), function (row) {
@@ -115,7 +116,7 @@
         function operateFormatter(value, row, index) {
             return [
                 '<div style="display: flex; gap: 10px">',
-                `<a class="favourite" href="/Favourite/Index" data-id="${row.id}" title="Favourite">`,
+                `<a class="favourite" href="#" data-id="${row.id}" title="Favourite">`,
                 '<i class="far fa-heart"></i>',
                 '</a>',
                 `<a class="details" href="/Movies/Details/${row.id}" title="Details">`,
@@ -125,11 +126,28 @@
                 '<i class="fa fa-pen"></i>',
                 '</a>',
                 `<a class="delete" href="#" onclick="deleteMovie(${row.id})" data-toggle="modal" data-target="#deleteModal" title="Delete">`,
-                //`<a class="delete" href="/Movies/Delete/${row.id}" title="Delete">`,
                 '<i class="fa fa-trash"></i>',
                 '</a>  ',
                 '</div>'
             ].join('')
+        }
+
+        var select = $('#genre-filter');
+        // genre filter options
+        $.ajax({
+            url: 'https://localhost:7180/Genre/UsedGenres',
+            type: 'GET',
+            success: function(response) {
+                $.each(response, function(index, item) {
+                    select.append('<option>' + item.text + '</option>');
+                });
+            }
+        });
+
+        // refresh the table when is submited the genre filter
+        function submitSearch(event) {
+            event.preventDefault()
+            $('#table').bootstrapTable('refresh')
         }
 
         // store the movie id (called on delete confirmation pop-up)
@@ -137,20 +155,48 @@
             $('#delete-movie-id').val(id);
         }
 
+        // trigger delete movie
+        $('#delete-form').submit(function (e) {
+            e.preventDefault();
+
+            var idMovie = $('#delete-movie-id').val()
+
+            $.ajax({
+                url: 'https://localhost:7180/Movies/Delete/' + idMovie,
+                type: 'POST',
+                contentType: 'application/json',
+                success: function (idMovie) {
+                    window.location.href = "/Movies/Index";
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert('Delete failed: ' + errorThrown);
+                }
+            });
+        });
+
         // triggers the feature to add movie to favorites
         $(document).on('click', '.favourite', function () {
-            var movieId = $(this).data('id');
+
+            var idMovie = $(this).data('id');
+            var data = {
+                token: token,
+                idMovie: idMovie
+            };
+
             $.ajax({
-                url: '/Favourite/update',
-                method: 'POST',
-                data: { idMovie: movieId },
+                url: 'https://localhost:7180/Favourite/Update',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
                 success: function () {
-                    alert('Movie added/removed to favorites!');
+                    alert('Movie added to favorites!');
+                    window.location.href = "/Favourite/Index";
                 },
                 error: function () {
                     alert('An error occurred');
                 }
             });
+
         });
 
         window.operateEvents = {
