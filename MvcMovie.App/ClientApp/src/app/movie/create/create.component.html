@@ -1,0 +1,46 @@
+<h1>Create</h1>
+
+<h4>Movie</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form id="create-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Title" class="control-label">Title</label>
+                <input [(ngModel)]="newMovie.Title" [ngModelOptions]="{standalone: true}" id="title" asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ReleaseDate" class="control-label">Release Date</label>
+                <input [(ngModel)]="newMovie.ReleaseDate" [ngModelOptions]="{standalone: true}" id="releaseDate" asp-for="ReleaseDate" class="form-control" />
+                <span asp-validation-for="ReleaseDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div style="display: flex;">
+                    <label asp-for="Genre" class="control-label" style="width: 100%;">Genre</label>
+                </div>
+                <select [(ngModel)]="newMovie.Genre" [ngModelOptions]="{standalone: true}" id="genre-filter" asp-for="Genre" class="form-control">
+                    <option *ngFor="let genre of allGenres" value="{{genre}}">{{genre}}</option>
+                </select>
+                <span asp-validation-for="Genre" class="text-danger"></span>
+                
+                <a style="display: flex;" routerLink="/genre/create" class="">Doesn't have the gender that you want?</a>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label">Price</label>
+                <input [(ngModel)]="newMovie.Price" [ngModelOptions]="{standalone: true}" id="price" asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Rating" class="control-label">Rating</label>
+                <input [(ngModel)]="newMovie.Rating" [ngModelOptions]="{standalone: true}" id="rating" asp-for="Rating" class="form-control" />
+                <span asp-validation-for="Rating" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" (click)="postMovieCreate()" class="btn btn-primary" /> |
+                <a asp-action="Index" routerLink="/movie" class="btn btn-primary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>

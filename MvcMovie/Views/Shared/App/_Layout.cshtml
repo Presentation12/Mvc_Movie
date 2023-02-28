@@ -280,7 +280,7 @@
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Boas, @User.Identity.Name </span>
+                                <span id="username" class="mr-2 d-none d-lg-inline text-gray-600 small"></span>
                                 <img class="img-profile rounded-circle" style="object-fit: cover;"
                                      src="https://raw.githubusercontent.com/Presentation12/Feedy/master/Frontend/angular/src/assets/images/pedrocrista.jpg">
                             </a>
@@ -345,7 +345,9 @@
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
+                    <form id="logout-form" method="post">
+                        <button type="submit" class="btn btn-primary">Logout</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -353,5 +355,45 @@
 
     <partial name="/Views/Shared/App/_scripts.cshtml"></partial>
     @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+
+        var token = localStorage.getItem('token');
+        var data = {
+            token: token
+        };
+
+        $(document).ready(function () {
+            $('#logout-form').submit(function (event) {
+                event.preventDefault();
+                $.ajax({
+                    url: 'https://localhost:7180/User/Logout',
+                    method: 'POST',
+                    success: function (response) {
+                        localStorage.removeItem('token');
+                        window.location.href = "/User/Login";
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(xhr.responseText);
+                    }
+                });
+            });
+        });
+
+        $.ajax({
+            url: 'https://localhost:7180/User/GetUserByToken',
+            method: 'GET',
+            dataType: 'json',
+            data: data,
+            success: function (response) {
+                $('#username').text(response.name);
+            },
+            error: function (xhr, status, error) {
+                alert("Error on loading your data...");
+            }
+        });
+
+    </script>
+
 </body>
 </html>

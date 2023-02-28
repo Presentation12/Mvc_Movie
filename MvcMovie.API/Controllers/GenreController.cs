@@ -33,7 +33,7 @@ namespace MvcMovie.API.Controllers
 
             var usedGenres = new SelectList(await genreQuery.Distinct().ToListAsync());
 
-            return new JsonResult(usedGenres);
+            return new JsonResult(usedGenres.Items);
         }
 
         #endregion
@@ -72,7 +72,7 @@ namespace MvcMovie.API.Controllers
 
         // POST: GenreController/Create
         [HttpPost("Create")]
-        public async Task<IActionResult> Create([Bind("Id,Name")] GenreViewModel genre)
+        public async Task<IActionResult> Create([Bind("Name")] GenreViewModel genre)
         {
             if (ModelState.IsValid)
             {

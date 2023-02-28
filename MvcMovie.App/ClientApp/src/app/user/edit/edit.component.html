@@ -1,0 +1,37 @@
+<h1>Edit</h1>
+
+<h4>Account</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input id="id-user" type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Name" class="control-label">Name</label>
+                <input [(ngModel)]="User.name" id="name" asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label">Email</label>
+                <input [(ngModel)]="User.email" id="email" asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <hr />
+            <div class="form-group">
+                <label asp-for="Password" class="control-label">Password</label>
+                <div class="input-group">
+                    <input [(ngModel)]="User.password" value="" autocomplete="new-password" id="password" asp-for="Password" required="true" class="form-control" type="password" />
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-outline-secondary" onclick="togglePassword()">
+                            <i class="fa fa-eye" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" (click)="postUserEdit()" class="btn btn-primary" /> |
+                <a asp-action="Profile" routerLink="/user/profile" class="btn btn-primary">Back to profile</a>
+            </div>
+    </div>
+</div>

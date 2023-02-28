@@ -28,14 +28,50 @@
 
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-<script>
-    $(document).on('click', 'a[data-method="POST"]', function (e) {
-        e.preventDefault(); // impede que o navegador siga o link
-        var form = $('<form>', {
-            'action': $(this).data('url'),
-            'method': 'POST'
-        });
-        $('body').append(form);
-        form.submit();
-    });
-</script>
+@*@section scripts {
+    <script>
+        //$(document).on('click', 'a[data-method="POST"]', function (e) {
+        //    e.preventDefault(); // impede que o navegador siga o link
+        //    var form = $('<form>', {
+        //        'action': $(this).data('url'),
+        //        'method': 'POST'
+        //    });
+        //    $('body').append(form);
+        //    form.submit();
+        //});
+
+        $(document).ready(function () {
+            $('#logout-form').submit(function (event) {
+                event.preventDefault();
+                $.ajax({
+                    url: 'https://localhost:7180/User/Logout',
+                    method: 'POST',
+                    success: function (response) {
+                        localStorage.removeItem('token');
+                        window.location.href = "/User/Login";
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(xhr.responseText);
+                    }
+                });
+            });
+
+            var token = localStorage.getItem('token');
+            var data = {
+                token: token
+            };
+            $.ajax({
+                url: 'https://localhost:7180/User/GetUserByToken',
+                method: 'GET',
+                dataType: 'json',
+                data: data,
+                success: function (response) {
+                    $('#username').text(response.Name);
+                },
+                error: function (xhr, status, error) {
+                    alert("Error on loading your data...");
+                }
+            });
+
+    </script>
+}*@

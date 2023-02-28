@@ -11,6 +11,8 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MvcMovie.API.Controllers
 {
@@ -29,7 +31,7 @@ namespace MvcMovie.API.Controllers
 
         #region GET
 
-        // GET: UserController
+        // GET: User
         [HttpGet("Index")]
         public ActionResult Index(string token)
         {
@@ -57,7 +59,7 @@ namespace MvcMovie.API.Controllers
             return new JsonResult(userModel);
         }
 
-        // GET: UserController/Profile/id
+        // GET: User/Profile/id
         [HttpGet("Profile")]
         public async Task<IActionResult> Profile(string token)
         {
@@ -84,7 +86,7 @@ namespace MvcMovie.API.Controllers
             return new JsonResult(userModel);
         }
 
-        // GET: UserController/Edit/id
+        // GET: User/Edit/id
         [HttpGet("Edit")]
         public async Task<IActionResult> Edit(string token)
         {
@@ -116,9 +118,23 @@ namespace MvcMovie.API.Controllers
 
         #region POST
 
+        // POST: User/GetUserByToken
+        [HttpPost("GetUserByToken")]
+        public async Task<User> GetUserByToken([FromBody] JObject data)
+        {
+            var token = data["token"].ToString();
+            var tokenDecoded = new JwtSecurityTokenHandler().ReadJwtToken(token);
+            var claimMail = tokenDecoded.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+            string userMail = claimMail?.Value;
+
+            //string userMail = User.FindFirstValue(ClaimTypes.Email);
+
+            return _userRepository.Get().Where(x => x.Email == userMail && x.Active == true).SingleOrDefault();
+        }
+
         // POST: UserController/Create
         [HttpPost("Create")]
-        public async Task<IActionResult> Create([Bind("Id,Name,Email,Password")] UserViewModel user)
+        public async Task<IActionResult> Create([Bind("Name,Email,Password")] UserViewModel user)
         {
             if (ModelState.IsValid)
             {
@@ -174,7 +190,7 @@ namespace MvcMovie.API.Controllers
                     userEdit.Name = user.Name;
                     userEdit.Email = user.Email;
 
-                    if (!string.IsNullOrEmpty(user.Password))
+                    if (!string.IsNullOrEmpty(user.Password) && user.Password != "undefined")
                     {
                         CreatePasswordHash(user.Password, out byte[] passwordHash, out byte[] passwordSalt);
                         userEdit.PassHash = Convert.ToBase64String(passwordHash);

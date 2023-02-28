@@ -39,12 +39,14 @@ namespace MvcMovie.API
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value))
                 };
-            });//.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options => builder.Configuration.Bind("cookieSettings", options)); 
+            });
             
             builder.Services.AddDistributedMemoryCache();
-            builder.Services.AddSession(options => {
-                options.IdleTimeout = TimeSpan.FromMinutes(30);
+            builder.Services.AddSession(options =>
+            {
                 options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
             });
 
             // Add services to the container.
@@ -71,15 +73,20 @@ namespace MvcMovie.API
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
-
-            app.UseAuthentication();
-
             app.UseCookiePolicy();
 
             app.UseRouting();
 
             app.UseSession();
+
+            app.UseAuthentication();
+
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                // endpoint configurations
+            });
 
             app.MapControllers();
 
