@@ -34,7 +34,7 @@ namespace MvcMovie.API.Controllers
         #region GET
 
         // GET: FavouriteController/Details/5
-        [HttpGet("Details")]
+        [HttpGet("Details/{id}")]
         public async Task<IActionResult> Details(int idMovie, string token)
         {
 

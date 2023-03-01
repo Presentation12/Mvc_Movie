@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using MvcMovie.API.Models;
 using MvcMovieDAL;
 using MvcMovieDAL.Entities;
+using Newtonsoft.Json.Linq;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
@@ -26,15 +27,15 @@ namespace MvcMovie.API.Controllers
 
         #region GET 
 
-        [HttpGet("Details")]
-        public async Task<IActionResult> Details(int idMovie)
+        [HttpGet("Details/{id}")]
+        public async Task<IActionResult> Details(int id)
         {
-            if (idMovie < 0 || !_movieRepository.Exists(idMovie))
+            if (id < 0 || !_movieRepository.Exists(id))
             {
                 return NotFound("Movie not found.");
             }
 
-            var movie = _movieRepository.Get().Where(x => x.Id == idMovie).Include(x => x.Genre).Select(x => new
+            var movie = _movieRepository.Get().Where(x => x.Id == id).Include(x => x.Genre).Select(x => new
             {
                 x.Id,
                 x.Title,
@@ -76,15 +77,15 @@ namespace MvcMovie.API.Controllers
         }
 
         // GET: Movies/Edit/5
-        [HttpGet("Edit")]
-        public async Task<IActionResult> Edit(int idMovie)
+        [HttpGet("Edit/{id}")]
+        public async Task<IActionResult> Edit(int id)
         {
-            if (idMovie < 0 || !_movieRepository.Exists(idMovie))
+            if (id < 0 || !_movieRepository.Exists(id))
             {
                 return NotFound("Movie not found.");
             }
 
-            var movie = _movieRepository.Get().Where(x => x.Id == idMovie).Include(x => x.Genre).Select(x => new
+            var movie = _movieRepository.Get().Where(x => x.Id == id).Include(x => x.Genre).Select(x => new
             {
                 x.Id,
                 x.Title,

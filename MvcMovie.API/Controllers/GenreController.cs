@@ -108,7 +108,7 @@ namespace MvcMovie.API.Controllers
         }
 
         // POST: GenreController/Delete/5
-        [HttpPost("Delete/{id}"), ActionName("Delete")]
+        [HttpPost("Delete/{id}")]
         public ActionResult Delete(int id)
         {
             if (_genreRepository.Get() == null)
