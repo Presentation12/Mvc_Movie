@@ -35,7 +35,7 @@ namespace MvcMovie.API.Controllers
 
         // GET: FavouriteController/Details/5
         [HttpGet("Details/{id}")]
-        public async Task<IActionResult> Details(int idMovie, string token)
+        public async Task<IActionResult> Details(int id, string token)
         {
 
             // Get user loged
@@ -52,12 +52,12 @@ namespace MvcMovie.API.Controllers
                 return new JsonResult(new { error = "User not found." }) { StatusCode = 404 };
             }
 
-            if (idMovie < 0 || _favouriteRepository.Get().Where(x => x.Movie.Id == idMovie && x.User.Id == user.Id).SingleOrDefault() == null)
+            if (id < 0 || _favouriteRepository.Get().Where(x => x.Movie.Id == id && x.User.Id == user.Id).SingleOrDefault() == null)
             {
                 return NotFound("Favourite Movie not found.");
             }
 
-            var movie = _favouriteRepository.Get().Where(x => x.Movie.Id == idMovie && x.User.Id == user.Id).Include(x => x.Movie.Genre).Select(x => new
+            var movie = _favouriteRepository.Get().Where(x => x.Movie.Id == id && x.User.Id == user.Id).Include(x => x.Movie.Genre).Select(x => new
             {
                 x.Movie.Id,
                 x.Movie.Title,
@@ -147,6 +147,12 @@ namespace MvcMovie.API.Controllers
             string token = data["token"].ToString();
 
             Movie movieEntitie = _movieRepository.Get().Where(x => x.Id == idMovie).Include(x => x.Genre).SingleOrDefault();
+
+            if (_favouriteRepository.Get().Where(x => x.Id == idMovie).SingleOrDefault() != null) 
+            {
+                // movie was already added to favourites
+                return new JsonResult(new { message = "This movie is already in favourites list." }) { StatusCode = 200 };
+            }
 
             // Get user loged
             //var tokenDecoded = new JwtSecurityTokenHandler().ReadJwtToken(HttpContext.Session.GetString("token"));
