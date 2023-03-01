@@ -14,8 +14,8 @@
                                 <form asp-action="Create" id="create-form">
                                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                     <div class="d-flex align-items-center mb-3 pb-1">
-                                        <i class="fas fa-film fa-2x me-3" style="color:#4e73df"></i>
-                                        <span class="h1 fw-bold mb-0" style="color:#4e73df">Mvc Movies</span>
+                                        <fa-icon [icon]="faCoffee" style="color:#4e73df;font-size: 30px;"></fa-icon>
+                                        <span class="h1 fw-bold mb-0" style="color:#4e73df;margin-left: 10px;">Mvc Movies</span>
                                     </div>
 
                                     <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Sign into your account</h5>
@@ -37,8 +37,8 @@
                                         <div class="input-group">
                                             <input [(ngModel)]="newUser.Password" [ngModelOptions]="{standalone: true}" id="password" asp-for="Password" required="false" class="form-control" type="password" autocomplete="new-password" />
                                             <div class="input-group-append">
-                                                <button type="button" class="btn btn-outline-secondary" onclick="togglePassword()">
-                                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                                <button type="button" class="btn btn-outline-secondary" (click)="togglePasswordVisibility()">
+                                                    <fa-icon [icon]="faEye" aria-hidden="true" style="color:#4e73df;"></fa-icon>
                                                 </button>
                                             </div>
                                         </div>

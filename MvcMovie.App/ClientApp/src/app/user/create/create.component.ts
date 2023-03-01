@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { SharedServiceService } from 'src/app/shared/shared-service.service';
 import { Router } from '@angular/router';
+import { faMugHot } from '@fortawesome/free-solid-svg-icons';
+import { faEye } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-create',
@@ -10,7 +12,9 @@ import { Router } from '@angular/router';
 export class UserCreateComponent implements OnInit {
 
   constructor(private service: SharedServiceService, private router : Router) { }
-
+  faCoffee = faMugHot;
+  faEye = faEye;
+  
   newUser={
     Name:"",
     Email:"",
@@ -27,6 +31,15 @@ export class UserCreateComponent implements OnInit {
         this.router.navigate(['/login']);
       }, 
       error => alert("Error"))
+  }
+
+  togglePasswordVisibility() {
+    var password = document.getElementById('password') as HTMLInputElement;
+    if (password.type === 'password') {
+      password.type = 'text';
+    } else {
+      password.type = 'password';
+    }
   }
 
 }

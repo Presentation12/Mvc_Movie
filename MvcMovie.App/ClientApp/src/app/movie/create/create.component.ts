@@ -35,7 +35,6 @@ export class MovieCreateComponent implements OnInit {
   postMovieCreate(): void {
     this.service.postMovieCreate(this.newMovie).subscribe(
       data => {
-        alert("Success");
         this.router.navigate(['/movie']);
       }, 
       error => alert("Error"))

@@ -50,6 +50,7 @@ import { FavouriteDetailsComponent } from './favourite/details/details.component
     HttpClientModule,
     FontAwesomeModule,
     FormsModule,
+
     RouterModule.forRoot([
       { path: '', component: UserLoginComponent, pathMatch: 'full' }
     ])

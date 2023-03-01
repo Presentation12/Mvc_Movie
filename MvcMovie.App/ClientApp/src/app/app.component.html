@@ -5,15 +5,15 @@
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
         <!-- Sidebar - Brand -->
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" routerLink="/user">
             <div class="sidebar-brand-icon">
-              <fa-icon [icon]="faCoffee"></fa-icon>
+              <fa-icon [icon]="faCoffee" style="font-size: 24px;"></fa-icon>
             </div>
             <div class="sidebar-brand-text mx-3">MvcMovie<sup>1</sup></div>
         </a>
 
         <!-- Divider -->
-        <hr class="sidebar-divider">
+        <hr class="sidebar-divider" style="background-color: #ADD8E6;">
         <!-- Heading -->
         <div class="sidebar-heading">
             Interface
@@ -21,14 +21,14 @@
 
         <!-- Nav Item - Dashboard -->
         <li class="nav-item">
-            <a class="nav-link" href="/User/Index">
-                <i class="fas fa-fw fa-tachometer-alt"></i>
-                <span>Dashboard</span>
+            <a class="nav-link d-flex align-items-center" routerLink="/user">
+              <fa-icon [icon]="faFilm"></fa-icon>
+              <span style="margin-left: 10px;">Dashboard</span>
             </a>
         </li>
 
         <!-- Divider -->
-        <hr class="sidebar-divider">
+        <hr class="sidebar-divider" style="background-color: #ADD8E6;">
 
         <!-- Heading -->
         <div class="sidebar-heading">
@@ -37,21 +37,20 @@
 
         <!-- Nav Item - Pages Collapse Menu -->
         <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                aria-expanded="true" aria-controls="collapseTwo">
-                <i class="fas fa-fw fa-cog"></i>
-                <span>Management</span>
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                <fa-icon [icon]="faWrench"></fa-icon>
+                <span style="margin-left: 10px;">Management</span>
             </a>
             <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Components</h6>
-                    <a class="collapse-item" href="/Movies/Index">
-                        <i class="fas fa-film"></i>
-                        <span>Movies</span>
+                    <a class="collapse-item" routerLink="/movie">
+                        <fa-icon [icon]="faFilm"></fa-icon>
+                        <span style="margin-left: 10px;">Movies</span>
                     </a>
-                    <a class="collapse-item" href="/Genre/Index">
-                        <i class="fas fa-align-justify"></i>
-                        <span>Genres</span>
+                    <a class="collapse-item" routerLink="/genre">
+                        <fa-icon [icon]="faBars"></fa-icon>
+                        <span style="margin-left: 10px;">Genres</span>
                     </a>
                 </div>
             </div>
@@ -59,14 +58,14 @@
 
         <!-- Nav Item - Favourites -->
         <li class="nav-item">
-            <a class="nav-link" href="/Favourite/Index">
-                <i class="fas fa-heart"></i>
-                <span>Favourites</span>
+            <a class="nav-link" routerLink="/favourite">
+              <fa-icon [icon]="faHeart"></fa-icon>
+                <span style="margin-left: 10px;">Favourites</span>
             </a>
         </li>
 
         <!-- Divider -->
-        <hr class="sidebar-divider">
+        <hr class="sidebar-divider" style="background-color: #ADD8E6;">
 
         <!-- Sidebar Toggler (Sidebar) -->
         <div class="text-center d-none d-md-inline">
@@ -260,14 +259,14 @@
                         <!-- Dropdown - User Information -->
                         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                               aria-labelledby="userDropdown">
-                            <a class="dropdown-item" href="/User/Profile">   
-                                <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                Profile
+                            <a class="dropdown-item" routerLink="/user/profile">   
+                                <fa-icon [icon]="faUser" style="color: gray;"></fa-icon>
+                                <span style="margin-left: 10px;">Profile</span>
                             </a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" data-url="/User/logout" data-method="POST" data-toggle="modal" data-target="#logoutModal">
-                                <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                Logout
+                            <a class="dropdown-item" data-url="/user/logout" data-method="POST" data-toggle="modal" data-target="#logoutModal">
+                                <fa-icon [icon]="faSignOutAlt" style="color: gray;"></fa-icon>
+                                <span style="margin-left: 10px;">Logout</span>
                             </a>
                         </div>
                     </li>

@@ -4,12 +4,13 @@
 <form id="form-filter" asp-controller="Movies" asp-action="Index" method="get">
     <div>
         <select id="genre-filter" class="form-control">
-            <option value="">All</option>
+            <option value=""></option>
+            <option *ngFor="let genre of GenresList" value="{{genre}}">{{genre}}</option>
         </select>
 
         <div class="input-group">
             <input type="text" id="title-filter" asp-for="SearchString" class="form-control" placeholder="Movie..." />
-            <input type="submit" id="search-button" value="Filter" onclick="submitSearch(event)" class="btn btn-primary" />
+            <input type="submit" id="search-button" (click)="refreshMovies()" value="Filter" onclick="submitSearch(event)" class="btn btn-primary" />
         </div>
     </div>
 </form>
@@ -19,31 +20,52 @@
 </p>
 
 <!-- Movie Table -->
-<table id="table"
-       data-toggle="table"
-       data-show-fullscreen="true"
-       data-query-params="queryParams"
-       data-detail-view="true"
-       data-detail-formatter="detailFormatter"
-       data-pagination="true"
-       data-id-field="id"
-       data-page-list="[10, 25, 50, 100, all]"
-       data-show-footer="true"
-       data-side-pagination="server"
-       data-url="https://localhost:7180/Movies/Paginate"
-       data-method="POST"
-       data-search="false"
-       data-show-columns="true">
+<table class="table table-striped hover-table">
     <thead>
-        <tr  *ngFor="let movie of MoviesList">
-            <th [attr.data-field]="movie.Title">Title</th>
-            <th [attr.data-field]="movie.ReleaseDate" data-formatter="dateFormat">Release Date</th>
-            <th [attr.data-field]="movie.GenreName">Genre</th>
-            <th [attr.data-field]="movie.Rating">Rating</th>
-            <th [attr.data-field]="" data-formatter="operateFormatter">Actions</th>
+        <tr class="titles">
+            <th>Title</th>
+            <th style="text-align: center;">Realease Date</th>
+            <th>Genre</th>
+            <th>Rating</th>
+            <th style="text-align: center;">Actions</th>
         </tr>
     </thead>
+    <tbody>
+        <tr class="lineTable" *ngFor="let movie of MoviesList">
+            <td>{{movie.title}}</td>
+            <td style="text-align: center;">{{movie.releaseDate | date: 'dd-MM-yyyy'}}</td>
+            <td>{{movie.genreName}}</td>
+            <td>{{movie.rating}}</td>
+            <td style="text-align: center;">
+                <a routerLink="/movie/details/{{movie.id}}" title="Details" style="margin:5px">
+                    <fa-icon [icon]="faEye"></fa-icon>
+                </a>
+                <a routerLink="/movie/edit/{{movie.id}}" title="Edit" style="margin:5px">
+                    <fa-icon [icon]="faPen"></fa-icon>
+                </a>
+                <a routerLink="" title="Favourite" style="margin:5px">
+                    <fa-icon [icon]="faHeart"></fa-icon>
+                </a>
+                <a title="Delete" routerLink="#" (click)="selectedMovieId(movie.id)" data-toggle="modal" data-target="#deleteModal" style="margin:5px">
+                    <fa-icon [icon]="faTrash"></fa-icon>
+                </a>
+            </td>
+        </tr>
+    </tbody>
 </table>
+
+<div class="d-flex justify-content-between p-2">
+    <select class="form-select" style="width: auto" name="pageSize" [(ngModel)]="pageSize" (change)="page = 1">
+      <option [ngValue]="2">2 items per page</option>
+      <option [ngValue]="4">4 items per page</option>
+      <option [ngValue]="6">6 items per page</option>
+    </select>
+  
+    <div>
+      <button class="btn btn-secondary me-2" [disabled]="page === 1" (click)="page = page - 1">Previous</button>
+      <button class="btn btn-secondary" [disabled]="getPaginatedMovies().length < pageSize" (click)="page = page + 1">Next</button>
+    </div>
+</div>
 
 <!-- Delete Modal-->
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -59,7 +81,7 @@
             <div class="modal-body">Select "Delete" below if you are ready to delete this movie.</div>
             <form id="delete-form" class="modal-footer">
                 <input type="hidden" id="delete-movie-id" name="id" />
-                <input type="submit" value="Delete" class="btn btn-danger" />
+                <input (click)="deleteMovie()" type="submit" value="Delete" class="btn btn-danger" data-dismiss="modal"/>
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
             </form>
         </div>

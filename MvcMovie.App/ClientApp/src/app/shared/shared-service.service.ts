@@ -14,7 +14,7 @@ export class SharedServiceService {
   //#region MOVIE
     //#region  GET
     getMovieDetails(idMovie:any){
-      return this.http.get<any>(this.APIUrl+'/Movies/Details', idMovie)
+      return this.http.get(this.APIUrl+'/Movies/Details/'+ idMovie)
     }
 
     getMovieCreate():Observable<any[]>{
@@ -22,7 +22,7 @@ export class SharedServiceService {
     }
 
     getMovieEdit(idMovie:any){
-      return this.http.get<any>(this.APIUrl+'/Movies/Edit', idMovie)
+      return this.http.get(this.APIUrl+'/Movies/Edit/'+ idMovie)
     }
     //#endregion
 
@@ -32,7 +32,6 @@ export class SharedServiceService {
     }
 
     postMovieCreate(newMovie:any){
-      alert(newMovie.Title+"//"+newMovie.ReleaseDate+"//"+newMovie.Genre+"//"+newMovie.Price+"//"+newMovie.Rating)
       return this.http.post(this.APIUrl+'/Movies/Create', newMovie)
     }
 
@@ -62,8 +61,8 @@ export class SharedServiceService {
       return this.http.post(this.APIUrl+'/Genre/Create', newGenre)
     }
 
-    postGenreDelete(idMovie:any){
-      return this.http.post(this.APIUrl+'/Genre/Delete/'+idMovie, null)
+    postGenreDelete(idGenre:any){
+      return this.http.post(this.APIUrl+'/Genre/Delete/'+idGenre, null)
     }
     //#endregion
   //#endregion
@@ -132,5 +131,4 @@ export class SharedServiceService {
     }
     //#endregion
   //#endregion
-
 }

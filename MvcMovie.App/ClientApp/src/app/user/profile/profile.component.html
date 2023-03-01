@@ -19,8 +19,8 @@
     </dl>
 </div>
 <div>
-    <a href="#" onclick="deleteUser(User.id)" data-toggle="modal" data-target="#deleteModal" title="Delete" class="fa fa-trash"></a> |
-    <a asp-action="Edit" class="fa fa-pen"></a>
+    <a routerLink="/user/edit" class="btn btn-primary">Edit</a> |
+    <a href="#" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger">Delete</a>
 </div>
 
 <!-- Delete Modal-->
@@ -37,7 +37,7 @@
             <div class="modal-body">Select "Delete" below if you are ready to delete your account.</div>
             <form id="delete-form" class="modal-footer" asp-action="Delete">
                 <input type="hidden" id="delete-user-id" name="id" />
-                <input type="submit" href="/User/Login" value="Delete" class="btn btn-danger" />
+                <input (click)="deleteUser()" type="submit" value="Delete" class="btn btn-danger" />
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
             </form>
         </div>

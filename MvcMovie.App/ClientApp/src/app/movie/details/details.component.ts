@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { SharedServiceService } from 'src/app/shared/shared-service.service';
 
 @Component({
@@ -8,7 +9,7 @@ import { SharedServiceService } from 'src/app/shared/shared-service.service';
 })
 export class MovieDetailsComponent implements OnInit {
 
-  constructor(private service: SharedServiceService) { }
+  constructor(private service: SharedServiceService, private route: ActivatedRoute) { }
 
   Movie:any={};
 
@@ -17,8 +18,7 @@ export class MovieDetailsComponent implements OnInit {
   }
 
   getMovieDetails(){
-    var idMovie = (document.getElementById('id-movie') as HTMLInputElement).value
-    alert(idMovie);
+    const idMovie = this.route.snapshot.paramMap.get('id');
     this.service.getMovieDetails(idMovie).subscribe(data => {
       this.Movie=data;
     })

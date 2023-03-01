@@ -1,0 +1,26 @@
+
+tr.titles{
+    background-color: #007bff;
+    color: white;
+}
+
+tr.lineTable:hover {
+    background-color: #d6f0ff;
+}
+
+tr.lineTable:nth-child(odd):hover {
+    background-color: #d6f0ff;
+}
+
+tr.lineTable:nth-child(odd) {
+    background-color: #ebf0ff;
+    color: black;
+}
+
+fa-icon{
+    transition: 0.3s;
+}
+
+fa-icon:hover{
+    color: #d6f0ff;
+}

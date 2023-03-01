@@ -3,41 +3,51 @@
 <form id="form-filter" asp-controller="Favourite" asp-action="Index" method="get">
     <div>
         <select id="genre-filter" class="form-control">
-            <option value="">All</option>
+            <option value=""></option>
+            <option *ngFor="let genre of GenresList" value="{{genre}}">{{genre}}</option>
         </select>
 
         <div class="input-group">
             <input type="text" id="title-filter" asp-for="SearchString" class="form-control" placeholder="Movie..." />
-            <input type="submit" id="search-button" value="Filter" onclick="submitSearch(event)" class="btn btn-primary" />
+            <input type="submit" id="search-button" value="Filter" (click)="refreshFavouriteMovies()" class="btn btn-primary" />
         </div>
     </div>
 </form>
 
-<table id="table"
-       data-toggle="table"
-       data-show-fullscreen="true"
-       data-query-params="queryParams"
-       data-detail-view="true"
-       data-detail-formatter="detailFormatter"
-       data-pagination="true"
-       data-id-field="id"
-       data-page-list="[10, 25, 50, 100, all]"
-       data-show-footer="true"
-       data-side-pagination="server"
-       data-url="https://localhost:7180/Favourite/Paginate"
-       data-method="POST"
-       data-search="false"
-       data-show-columns="true">
+<!-- Movie Table -->
+<table class="table table-striped hover-table">
     <thead>
-        <tr>
-            <th data-field="title">Title</th>
-            <th data-field="releaseDate" data-formatter="dateFormat">Release Date</th>
-            <th data-field="genreName">Genre</th>
-            <th data-field="rating">Rating</th>
-            <th data-field="" data-formatter="operateFormatter">Actions</th>
+        <tr class="titles">
+            <th>Title</th>
+            <th>Realease Date</th>
+            <th>Genre</th>
+            <th>Rating</th>
+            <th>Actions</th>
         </tr>
     </thead>
+    <tbody>
+        <tr class="lineTable" *ngFor="let favouriteMovie of FavouriteMoviesList">
+            <td>{{favouriteMovie.title}}</td>
+            <td>{{favouriteMovie.releaseDate | date: 'dd-MM-yyyy'}}</td>
+            <td>{{favouriteMovie.genreName}}</td>
+            <td>{{favouriteMovie.rating}}</td>
+            <td data-field="" data-formatter="operateFormatter"></td>
+        </tr>
+    </tbody>
 </table>
+
+<div class="d-flex justify-content-between p-2">
+    <select class="form-select" style="width: auto" name="pageSize" [(ngModel)]="pageSize" (change)="page = 1">
+      <option [ngValue]="2">2 items per page</option>
+      <option [ngValue]="4">4 items per page</option>
+      <option [ngValue]="6">6 items per page</option>
+    </select>
+  
+    <div>
+      <button class="btn btn-secondary me-2" [disabled]="page === 1" (click)="page = page - 1">Previous</button>
+      <button class="btn btn-secondary" [disabled]="getPaginatedMovies().length < pageSize" (click)="page = page + 1">Next</button>
+    </div>
+</div>
 
 <!-- Delete Modal-->
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"

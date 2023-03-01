@@ -22,8 +22,8 @@
                 <div class="input-group">
                     <input [(ngModel)]="User.password" value="" autocomplete="new-password" id="password" asp-for="Password" required="true" class="form-control" type="password" />
                     <div class="input-group-append">
-                        <button type="button" class="btn btn-outline-secondary" onclick="togglePassword()">
-                            <i class="fa fa-eye" aria-hidden="true"></i>
+                        <button type="button" class="btn btn-outline-secondary" (click)="togglePasswordVisibility()">
+                            <fa-icon [icon]="faEye" aria-hidden="true" style="color:#4e73df;"></fa-icon>
                         </button>
                     </div>
                 </div>

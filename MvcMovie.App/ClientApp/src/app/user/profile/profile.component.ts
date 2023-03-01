@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { SharedServiceService } from 'src/app/shared/shared-service.service';
 
 @Component({
@@ -8,7 +9,7 @@ import { SharedServiceService } from 'src/app/shared/shared-service.service';
 })
 export class UserProfileComponent implements OnInit {
 
-  constructor(private service: SharedServiceService) { }
+  constructor(private service: SharedServiceService, private router: Router) { }
 
   User:any={};
 
@@ -24,5 +25,19 @@ export class UserProfileComponent implements OnInit {
     this.service.getUserByToken(data).subscribe(data => {
       this.User=data;
     })
+  }
+
+  deleteUser()
+  {
+    var token = localStorage.getItem('token');
+    var data = {
+      token: token
+    };
+    this.service.postUserDelete(data).subscribe(
+      data => {
+        this.router.navigate(['/login']);
+      }, 
+      error => alert(error.message)
+      )
   }
 }

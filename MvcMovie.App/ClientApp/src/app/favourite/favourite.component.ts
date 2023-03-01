@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component,NgZone, OnInit } from '@angular/core';
+import { SharedServiceService } from '../shared/shared-service.service';
 
 @Component({
   selector: 'app-favourite',
@@ -7,9 +8,76 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FavouriteComponent implements OnInit {
 
-  constructor() { }
+  constructor(private service: SharedServiceService, private ngZone: NgZone) { }
+
+  GenresList:any=[];
+  FavouriteMoviesList:any=[];
+  model = {
+    offset: 0,
+    limit: 0,
+    search: [{
+      name: "Genre",
+      value: ""
+    },
+    {
+      name: "Title",
+      value: ""
+    },
+    {
+      name: "Token",
+      value: ""
+    }]
+  };
+
+  page: number = 1;
+  pageSize: number = 2;
 
   ngOnInit(): void {
+    this.refreshFavouriteMovies();
+    this.refreshGenres();
+  }
+
+  getPaginatedMovies() {
+    const startIndex = (this.page - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    return this.FavouriteMoviesList.slice(startIndex, endIndex);
+  }
+
+  refreshFavouriteMovies() {
+    var token = localStorage.getItem('token');
+    const tokenX = this.model.search.find(s => s.name === 'Token');
+    if (tokenX && token) {
+      tokenX.value = token;
+    }
+
+    const searchGenre = this.model.search.find(s => s.name === 'Genre');
+    if (searchGenre) {
+      searchGenre.value = (document.getElementById('genre-filter') as HTMLInputElement).value;
+    }
+
+    const searchTitle = this.model.search.find(s => s.name === 'Title');
+    if (searchTitle) {
+      searchTitle.value = (document.getElementById('title-filter') as HTMLInputElement).value;
+    }
+    
+    this.service.getFavourites(this.model).subscribe(
+      (data :any) => {
+        this.ngZone.run(() => {
+          this.FavouriteMoviesList = data.rows;
+          console.log(this.FavouriteMoviesList);
+        });
+      }
+      ,error =>{
+        alert(error.message);
+    });
+  }
+
+  refreshGenres(){
+    this.service.getUsedGenres().subscribe(
+      data => {
+        this.GenresList=data;
+      }, 
+      error => alert("Error"))
   }
 
 }

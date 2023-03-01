@@ -23,9 +23,9 @@ import { FavouriteDetailsComponent } from './favourite/details/details.component
 
 const routes: Routes = [
     {path: 'movie', component:MovieComponent},
-    {path: 'movie/details', component:MovieDetailsComponent},
+    {path: 'movie/details/:id', component:MovieDetailsComponent},
     {path: 'movie/create', component:MovieCreateComponent},
-    {path: 'movie/edit', component:MovieEditComponent},
+    {path: 'movie/edit/:id', component:MovieEditComponent},
     {path: 'genre', component:GenreComponent},
     {path: 'genre/create', component:GenreCreateComponent},
     {path: 'user', component:UserComponent},
