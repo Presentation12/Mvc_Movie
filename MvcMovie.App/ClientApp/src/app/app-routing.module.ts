@@ -34,7 +34,7 @@ const routes: Routes = [
     {path: 'user/edit', component:UserEditComponent},
     {path: 'login', component:UserLoginComponent},
     {path: 'favourite', component:FavouriteComponent},
-    {path: 'favourite/details', component:FavouriteDetailsComponent},
+    {path: 'favourite/details/:id', component:FavouriteDetailsComponent},
     
   ];
 

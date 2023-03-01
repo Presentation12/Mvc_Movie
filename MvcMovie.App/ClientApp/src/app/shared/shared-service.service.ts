@@ -70,7 +70,7 @@ export class SharedServiceService {
   //#region FAVOURITE
     //#region  GET
     getFavouriteDetails(idFavourite:any){
-      return this.http.get<any>(this.APIUrl+'/Favourite/Details', idFavourite)
+      return this.http.get<any>(this.APIUrl+'/Favourite/Details/'+ idFavourite)
     }
     //#endregion
 

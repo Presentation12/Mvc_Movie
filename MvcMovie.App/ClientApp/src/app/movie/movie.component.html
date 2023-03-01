@@ -24,18 +24,18 @@
     <thead>
         <tr class="titles">
             <th>Title</th>
-            <th style="text-align: center;">Realease Date</th>
             <th>Genre</th>
             <th>Rating</th>
+            <th style="text-align: center;">Realease Date</th>
             <th style="text-align: center;">Actions</th>
         </tr>
     </thead>
     <tbody>
         <tr class="lineTable" *ngFor="let movie of MoviesList">
             <td>{{movie.title}}</td>
-            <td style="text-align: center;">{{movie.releaseDate | date: 'dd-MM-yyyy'}}</td>
             <td>{{movie.genreName}}</td>
             <td>{{movie.rating}}</td>
+            <td style="text-align: center;">{{movie.releaseDate | date: 'dd-MM-yyyy'}}</td>
             <td style="text-align: center;">
                 <a routerLink="/movie/details/{{movie.id}}" title="Details" style="margin:5px">
                     <fa-icon [icon]="faEye"></fa-icon>
@@ -43,7 +43,7 @@
                 <a routerLink="/movie/edit/{{movie.id}}" title="Edit" style="margin:5px">
                     <fa-icon [icon]="faPen"></fa-icon>
                 </a>
-                <a routerLink="" title="Favourite" style="margin:5px">
+                <a routerLink="#" title="Favourite" (click)="addFavourite(movie.id)" style="margin:5px">
                     <fa-icon [icon]="faHeart"></fa-icon>
                 </a>
                 <a title="Delete" routerLink="#" (click)="selectedMovieId(movie.id)" data-toggle="modal" data-target="#deleteModal" style="margin:5px">

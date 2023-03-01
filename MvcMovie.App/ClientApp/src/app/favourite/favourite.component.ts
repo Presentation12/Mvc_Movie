@@ -1,5 +1,7 @@
 import { Component,NgZone, OnInit } from '@angular/core';
 import { SharedServiceService } from '../shared/shared-service.service';
+import { faEye } from '@fortawesome/free-solid-svg-icons';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-favourite',
@@ -9,6 +11,8 @@ import { SharedServiceService } from '../shared/shared-service.service';
 export class FavouriteComponent implements OnInit {
 
   constructor(private service: SharedServiceService, private ngZone: NgZone) { }
+  faEye = faEye;
+  faTrash = faTrash;
 
   GenresList:any=[];
   FavouriteMoviesList:any=[];
@@ -28,6 +32,8 @@ export class FavouriteComponent implements OnInit {
       value: ""
     }]
   };
+
+  idFavouriteMovie:any={};
 
   page: number = 1;
   pageSize: number = 2;
@@ -78,6 +84,22 @@ export class FavouriteComponent implements OnInit {
         this.GenresList=data;
       }, 
       error => alert("Error"))
+  }
+
+  deleteFavouriteMovie(){
+    var token = localStorage.getItem('token');
+    var data = {
+      token: token,
+      idMovie: this.idFavouriteMovie
+    };
+    this.service.postFavouriteDelete(data).subscribe(
+      data => this.refreshFavouriteMovies(), 
+      error => alert("Error")
+    )
+  }
+
+  selectedFavouriteMovieId(currentId : any){
+    this.idFavouriteMovie = currentId;
   }
 
 }

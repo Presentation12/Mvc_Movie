@@ -19,19 +19,26 @@
     <thead>
         <tr class="titles">
             <th>Title</th>
-            <th>Realease Date</th>
             <th>Genre</th>
             <th>Rating</th>
-            <th>Actions</th>
+            <th style="text-align: center;">Realease Date</th>
+            <th style="text-align: center;">Actions</th>
         </tr>
     </thead>
     <tbody>
         <tr class="lineTable" *ngFor="let favouriteMovie of FavouriteMoviesList">
             <td>{{favouriteMovie.title}}</td>
-            <td>{{favouriteMovie.releaseDate | date: 'dd-MM-yyyy'}}</td>
             <td>{{favouriteMovie.genreName}}</td>
             <td>{{favouriteMovie.rating}}</td>
-            <td data-field="" data-formatter="operateFormatter"></td>
+            <td style="text-align: center;">{{favouriteMovie.releaseDate | date: 'dd-MM-yyyy'}}</td>
+            <td style="text-align: center;">
+                <a routerLink="/favourite/details/{{favouriteMovie.id}}" title="Details" style="margin:5px">
+                    <fa-icon [icon]="faEye"></fa-icon>
+                </a>
+                <a title="Delete" (click)="selectedFavouriteMovieId(favouriteMovie.id)" routerLink="#" data-toggle="modal" data-target="#deleteModal" style="margin:5px">
+                    <fa-icon [icon]="faTrash"></fa-icon>
+                </a>
+            </td>
         </tr>
     </tbody>
 </table>
@@ -63,7 +70,7 @@
             <div class="modal-body">Select "Delete" below if you are ready to delete this favourite.</div>
             <form id="delete-form" class="modal-footer" asp-action="Delete">
                 <input type="hidden" id="delete-favourite-id" name="id" />
-                <input type="submit" value="Delete" class="btn btn-danger" />
+                <input (click)="deleteFavouriteMovie()" type="submit" value="Delete" class="btn btn-danger" data-dismiss="modal"/>
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
             </form>
         </div>

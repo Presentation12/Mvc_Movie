@@ -92,4 +92,15 @@ export class MovieComponent implements OnInit {
     this.idMovie = currentId;
   }
 
+  addFavourite(idFavouriteMovie : any){
+    var token = localStorage.getItem('token');
+    var data = {
+      token: token,
+      idMovie: idFavouriteMovie
+    };
+    this.service.postFavouriteUpdate(data).subscribe(
+      data => this.router.navigate(['/favourite']), 
+      error => alert("Error")
+    )
+  }
 }
